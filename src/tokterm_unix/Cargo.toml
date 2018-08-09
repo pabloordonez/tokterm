@@ -3,4 +3,10 @@ name = "tokterm_unix"
 version = "0.1.0"
 authors = ["Pablo Ordoñez <pabloo84@gmail.com>"]
 
-[dependencies]
+[dependencies.tokterm_core]
+path="../tokterm_core"
+version="0.1.0"
+
+[target.'cfg(unix)'.dependencies]
+#rustbox = "*"
+ncurses ="*"

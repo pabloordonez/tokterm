@@ -1,6 +1,6 @@
 use tokterm_core::Result;
-
+use tokterm_unix::test;
 pub fn execute() -> Result<()> {
-    println!("hello world");
+    test()?;
     Ok(())
 }

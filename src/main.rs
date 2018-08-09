@@ -26,6 +26,9 @@ pub mod unix;
 use unix::execute;
 
 fn main() -> Result<()> {
-    execute()?;
+    match execute() {
+        Ok(()) => (),
+        Err(err) => println!("{}", err),
+    };
     Ok(())
 }
