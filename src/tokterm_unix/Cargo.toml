@@ -1,5 +1,5 @@
 [package]
-name = "tokterm_linux"
+name = "tokterm_unix"
 version = "0.1.0"
 authors = ["Pablo Ordoñez <pabloo84@gmail.com>"]
 

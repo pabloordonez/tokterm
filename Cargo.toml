@@ -7,8 +7,11 @@ authors = ["Pablo Ordoñez <pabloo84@gmail.com>"]
 path="src/tokterm_core"
 version="0.1.0"
 
-[dependencies.tokterm_windows]
-path="src/tokterm_windows"
-version="0.1.0"
+
+[target.'cfg(windows)'.dependencies]
+tokterm_windows = { path = "src/tokterm_windows",  version = "0.1.0" }
+
+[target.'cfg(unix)'.dependencies]
+tokterm_unix = { path = "src/tokterm_unix", version = "0.1.0" }
 
 
