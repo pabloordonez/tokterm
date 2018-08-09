@@ -1,0 +1,14 @@
+[package]
+name = "tokterm"
+version = "0.1.0"
+authors = ["Pablo Ordoñez <pabloo84@gmail.com>"]
+
+[dependencies.tokterm_core]
+path="src/tokterm_core"
+version="0.1.0"
+
+[dependencies.tokterm_windows]
+path="src/tokterm_windows"
+version="0.1.0"
+
+

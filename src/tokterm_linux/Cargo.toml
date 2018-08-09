@@ -1,0 +1,6 @@
+[package]
+name = "tokterm_linux"
+version = "0.1.0"
+authors = ["Pablo Ordoñez <pabloo84@gmail.com>"]
+
+[dependencies]
