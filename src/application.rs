@@ -9,18 +9,18 @@ use tokterm_core::events::event::MouseEvent;
 use tokterm_core::events::event::{Event, KeyboardEventType, MouseEventType};
 use tokterm_core::system::application::Application;
 use tokterm_core::Result;
-use tokterm_windows::application::WindowsApplication;
 
-pub fn execute() -> Result<()> {
-    let mut application = WindowsApplication::create()?;
-
+pub fn execute(application: &mut Application) -> Result<()> {
     {
-        let window = application.get_window();
-        window.set_window_position(Point2d::empty())?;
-        window.set_window_size(Size2d::new(800, 600))?;
-
-        let mouse = application.get_mouse();
-        mouse.show_cursor(false)?;
+        ///////////////////////////////////////////////////
+        //  NOT IMPLEMENTED ON UNIX
+        ///////////////////////////////////////////////////
+        //let window = application.get_window();
+        //window.set_window_position(Point2d::empty())?;
+        //window.set_window_size(Size2d::new(800, 600))?;
+        //let mouse = application.get_mouse();
+        //mouse.show_cursor(false)?;
+        ///////////////////////////////////////////////////
 
         let terminal = application.get_terminal();
         terminal.clear()?;
@@ -28,7 +28,7 @@ pub fn execute() -> Result<()> {
         terminal.set_cursor_visibility(false)?;
     }
 
-    let mut buffer = CellBuffer::new(Cell::new_default(' '), Size2d::empty());
+    let mut buffer = CellBuffer::new(Cell::new_default('X'), Size2d::empty());
     let mut fps = 0;
     let mut frames = 0;
     let mut duration = Duration::from_micros(0);
@@ -36,6 +36,9 @@ pub fn execute() -> Result<()> {
     loop {
         let now = Instant::now();
         frames += 1;
+
+        // checks the size and resize the buffer if required.
+        buffer.resize(Cell::new('X', Color::Blue, Color::Black), application.get_terminal().get_console_size()?);
 
         // process native events.
         application.listen_events()?;
@@ -45,15 +48,12 @@ pub fn execute() -> Result<()> {
             match event {
                 Event::Mouse(mouse) => process_mouse_events(mouse, &mut buffer),
                 Event::Keyboard(keyboard) => process_keyboard_events(keyboard, &mut buffer),
-                _ => continue,
+                _ => (),
             };
         }
 
-        // checks the size and resize the buffer if required.
-        check_size(&application, &mut buffer)?;
-
         // checks the app stats and draw them in the stat bar.
-        draw_stats(&application, &mut buffer, fps)?;
+        draw_stats(application, &mut buffer, fps)?;
 
         // blits the buffer onto the terminal console.
         application.get_terminal().write(&buffer)?;
@@ -67,45 +67,26 @@ pub fn execute() -> Result<()> {
             frames = 0;
         }
     }
-
-    //application.get_terminal().dispose()?;
-}
-
-fn check_size(application: &Application, buffer: &mut CellBuffer) -> Result<()> {
-    let size = application.get_terminal().get_console_size()?;
-
-    if size.width != buffer.size.width || size.height != buffer.size.height {
-        buffer.resize(Cell::new(' ', Color::Black, Color::Black), size);
-    }
-
-    Ok(())
 }
 
 fn draw_stats(application: &Application, buffer: &mut CellBuffer, fps: i32) -> Result<()> {
-    let text_background = Cell::new(' ', Color::White, Color::DarkGrey);
-    let separator = Cell::new('¯', Color::Grey, Color::Black);
-    let window = application.get_window();
+    let text_background = Cell::new(' ', Color::Red, Color::DarkGrey);
+    let separator = Cell::new('¯', Color::Blue, Color::Black);
     let terminal = application.get_terminal();
     let console_size = terminal.get_console_size()?;
-    let window_size = window.get_window_client_size()?;
-    let char_size = terminal.get_char_size(window)?;
 
     buffer.repeat_cell(text_background, Point2d::new(0, 0), console_size.width);
     buffer.repeat_cell(separator, Point2d::new(0, 1), console_size.width);
     buffer.write_str(
         &format!(
-            "FPS: {}   Window({}, {})   Console({}, {})   Char({}, {})",
+            "FPS: {}   Console({}, {})",
             fps,
-            window_size.width,
-            window_size.height,
             console_size.width,
             console_size.height,
-            char_size.width,
-            char_size.height
         ),
         Point2d::empty(),
-        Color::White,
-        text_background.background,
+        Color::Green,
+        Color::Red,
     );
 
     Ok(())

@@ -37,8 +37,8 @@ use Empty;
 
 #[allow(dead_code)]
 pub struct WindowsApplication {
-    window: WindowsWindow,
     terminal: WindowsTerminal,
+    window: WindowsWindow,
     mouse: WindowsMouse,
     event_queue: EventQueue,
     mouse_state: MouseState,

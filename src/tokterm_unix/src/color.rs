@@ -15,7 +15,7 @@ impl ColorPair {
         }
     }
 
-    pub fn from_cell(cell: Cell) -> ColorPair {
+    pub fn from_cell(cell: &Cell) -> ColorPair {
         ColorPair {
             foreground: cell.foreground,
             background: cell.background,

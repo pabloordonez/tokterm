@@ -4,9 +4,7 @@ use std::mem::zeroed;
 use winapi::shared::windef::{POINT, RECT};
 use winapi::um::wincon::CHAR_INFO;
 use winapi::um::wincon::INPUT_RECORD;
-use winapi::um::wincon::{
-    CONSOLE_CURSOR_INFO, CONSOLE_SCREEN_BUFFER_INFO, COORD, SMALL_RECT,
-};
+use winapi::um::wincon::{CONSOLE_CURSOR_INFO, CONSOLE_SCREEN_BUFFER_INFO, COORD, SMALL_RECT};
 
 pub mod application;
 pub mod color;

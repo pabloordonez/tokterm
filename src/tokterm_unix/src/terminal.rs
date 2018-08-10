@@ -1,11 +1,21 @@
+use color::color_to_i16;
 use color::ColorPair;
+use ncurses::attron;
+use ncurses::cbreak;
 use ncurses::clear;
 use ncurses::constants::ERR;
 use ncurses::curs_set;
 use ncurses::endwin;
 use ncurses::getmaxyx;
+use ncurses::has_colors;
+use ncurses::init_pair;
 use ncurses::initscr;
+use ncurses::mvwaddch;
+use ncurses::noecho;
+use ncurses::refresh;
+use ncurses::start_color;
 use ncurses::wmove;
+use ncurses::COLOR_PAIR;
 use ncurses::CURSOR_VISIBILITY;
 use ncurses::WINDOW;
 use std::collections::HashMap;
@@ -15,14 +25,6 @@ use tokterm_core::drawing::size_2d::Size2d;
 use tokterm_core::system::terminal::Terminal;
 use tokterm_core::system::window::Window;
 use tokterm_core::Result;
-use ncurses::mvwaddch;
-use ncurses::refresh;
-use ncurses::init_pair;
-use color::color_to_i16;
-use ncurses::attron;
-use ncurses::COLOR_PAIR;
-use ncurses::has_colors;
-use ncurses::start_color;
 
 pub struct UnixTerminal {
     window: WINDOW,
@@ -32,12 +34,25 @@ impl UnixTerminal {
     pub fn create() -> Result<UnixTerminal> {
         let window = initscr();
 
+        if cbreak() == ERR {
+            return Err("Couldn't change the input mode.");
+        }
+
+        if noecho() == ERR {
+            return Err("Couldn't deactivate echo.");
+        }
+
         if !has_colors() {
             return Err("The terminal does not support color.");
         }
 
         start_color();
         Ok(UnixTerminal { window })
+    }
+
+    #[inline]
+    pub fn get_window(&self) -> WINDOW {
+        self.window
     }
 }
 
@@ -84,7 +99,7 @@ impl Terminal for UnixTerminal {
 
     /// Gets the character size in pixel units.
     fn get_char_size(&self, window: &Window) -> Result<Size2d> {
-        Ok(Size2d::empty())
+        unimplemented!()
     }
 
     /// Clears the console screen.
@@ -99,21 +114,30 @@ impl Terminal for UnixTerminal {
     /// Draws a `CellBuffer` to the screen.
     fn write(&self, cell_buffer: &CellBuffer) -> Result<()> {
         let mut colors: HashMap<ColorPair, i16> = HashMap::new();
-        let mut pair_index: i16= 0;
+        let mut pair_index: i16 = 0;
         let mut index: usize = 0;
 
         for cell in cell_buffer.iter() {
-            let color_pair = ColorPair::from_cell(*cell);
+            let color_pair = ColorPair::from_cell(cell);
             let position = cell_buffer.coordinates_of(index);
 
             if !colors.contains_key(&color_pair) {
-                init_pair(pair_index, color_to_i16(color_pair.foreground), color_to_i16(color_pair.background));
+                init_pair(
+                    pair_index,
+                    color_to_i16(color_pair.foreground),
+                    color_to_i16(color_pair.background),
+                );
                 colors.insert(color_pair, pair_index);
-                pair_index+= 1;
+                pair_index += 1;
             }
 
             attron(COLOR_PAIR(*colors.get(&color_pair).unwrap()));
-            mvwaddch(self.window, position.y as i32, position.x as i32, cell.character as u64);
+            mvwaddch(
+                self.window,
+                position.y as i32,
+                position.x as i32,
+                cell.character as u64,
+            );
 
             index += 1;
         }

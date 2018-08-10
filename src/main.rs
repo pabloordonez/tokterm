@@ -1,34 +1,35 @@
 extern crate tokterm_core;
 use tokterm_core::Result;
+use tokterm_core::system::application::Application;
 
-///////////////////////////////////////////////////
-/// Windows Test App
-///////////////////////////////////////////////////
 #[cfg(windows)]
 extern crate tokterm_windows;
 
-#[cfg(windows)]
-pub mod windows;
-
-#[cfg(windows)]
-use windows::execute;
-
-///////////////////////////////////////////////////
-/// unix Test App
-///////////////////////////////////////////////////
 #[cfg(unix)]
 extern crate tokterm_unix;
 
-#[cfg(unix)]
-pub mod unix;
-
-#[cfg(unix)]
-use unix::execute;
+mod application;
+use application::execute;
 
 fn main() -> Result<()> {
-    match execute() {
-        Ok(()) => (),
-        Err(err) => println!("{}", err),
-    };
+    launch()?;
+    Ok(())
+}
+
+#[cfg(windows)]
+fn launch() -> Result<()> {
+    use tokterm_windows::application::WindowsApplication;
+    let mut application = WindowsApplication::create()?;
+    execute(&mut application)?;
+    application.get_terminal().dispose()?;
+    Ok(())
+}
+
+#[cfg(unix)]
+fn launch() -> Result<()> {
+    use tokterm_unix::application::UnixApplication;
+    let mut application = UnixApplication::create()?;
+    execute(&mut application)?;
+    application.get_terminal().dispose()?;
     Ok(())
 }
