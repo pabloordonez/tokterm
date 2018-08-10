@@ -92,7 +92,7 @@ fn draw_stats(application: &Application, buffer: &mut CellBuffer, fps: i32) -> R
 
     buffer.repeat_cell(text_background, Point2d::new(0, 0), console_size.width);
     buffer.repeat_cell(separator, Point2d::new(0, 1), console_size.width);
-    buffer.write_string(
+    buffer.write_str(
         &format!(
             "FPS: {}   Window({}, {})   Console({}, {})   Char({}, {})",
             fps,
@@ -123,7 +123,7 @@ fn process_mouse_events(mouse: MouseEvent, buffer: &mut CellBuffer) {
     }
 
     if mouse.event_type == MouseEventType::HorizontalWheel {
-        buffer.write_string(
+        buffer.write_str(
             &format!("{}", mouse.wheel_delta),
             Point2d::new(0, 2),
             Color::White,
@@ -139,7 +139,7 @@ fn process_keyboard_events(keyboard: KeyboardEvent, buffer: &mut CellBuffer) {
         "up"
     };
 
-    buffer.write_string(
+    buffer.write_str(
         &format!("{:?} {}", keyboard.key, down),
         Point2d::new(0, 2),
         Color::White,

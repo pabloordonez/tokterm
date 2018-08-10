@@ -25,6 +25,10 @@ impl CellBuffer {
     }
 
     pub fn resize(&mut self, default_cell: Cell, new_size: Size2d) {
+        if new_size == self.size {
+            return;
+        }
+
         self.size = new_size;
         self.cells = vec![default_cell; new_size.width * new_size.height];
     }
@@ -86,16 +90,6 @@ impl CellBuffer {
     pub fn write_str(
         &mut self,
         text: &str,
-        position: Point2d,
-        foreground: Color,
-        background: Color,
-    ) {
-        self.write_chars(text.chars(), position, foreground, background);
-    }
-
-    pub fn write_string(
-        &mut self,
-        text: &String,
         position: Point2d,
         foreground: Color,
         background: Color,

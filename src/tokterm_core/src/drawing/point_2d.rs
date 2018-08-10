@@ -1,4 +1,4 @@
-#[derive(Debug, Copy, Clone)]
+#[derive(Hash, Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Point2d {
     pub x: usize,
     pub y: usize,

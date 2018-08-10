@@ -1,6 +1,6 @@
 use drawing::color::Color;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Hash, Debug, Copy, Clone)]
 pub struct Cell {
     pub character: char,
     pub background: Color,
