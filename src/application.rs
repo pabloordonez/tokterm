@@ -96,17 +96,31 @@ fn draw_stats(application: &Application, buffer: &mut CellBuffer, fps: i32) -> R
 }
 
 fn process_mouse_events(mouse: MouseEvent, buffer: &mut CellBuffer) {
-    if mouse.event_type == MouseEventType::MouseMove || mouse.event_type == MouseEventType::Click {
+    if mouse.event_type == MouseEventType::MouseMove
+        || mouse.event_type == MouseEventType::Click
+        || mouse.event_type == MouseEventType::DoubleClick {
         if mouse.left_button {
-            buffer.set(mouse.position, Cell::new('O', Color::White, Color::Black));
+            buffer.set(mouse.position, Cell::default('L'));
+        }
+
+        if mouse.middle_button {
+            buffer.set(mouse.position, Cell::default('M'));
         }
 
         if mouse.right_button {
-            buffer.set(mouse.position, Cell::default('Z'));
+            buffer.set(mouse.position, Cell::default('R'));
+        }
+
+        if mouse.extra_button_1 {
+            buffer.set(mouse.position, Cell::default('1'));
+        }
+
+        if mouse.extra_button_2 {
+            buffer.set(mouse.position, Cell::default('2'));
         }
     }
 
-    if mouse.event_type == MouseEventType::HorizontalWheel {
+    if mouse.event_type == MouseEventType::Wheel {
         buffer.write_str(
             &format!("{}", mouse.wheel_delta),
             Point2d::new(0, 2),

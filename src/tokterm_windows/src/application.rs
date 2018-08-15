@@ -208,8 +208,8 @@ fn process_mouse_event(input_record: &INPUT_RECORD) -> Event {
         event_type: match mouse_event.dwEventFlags {
             0 => MouseEventType::Click,
             MOUSE_MOVED => MouseEventType::MouseMove,
-            MOUSE_WHEELED => MouseEventType::HorizontalWheel,
-            MOUSE_HWHEELED => MouseEventType::VerticalWheel,
+            MOUSE_WHEELED |
+            MOUSE_HWHEELED => MouseEventType::Wheel,
             DOUBLE_CLICK => MouseEventType::DoubleClick,
             _ => MouseEventType::MouseMove,
         },

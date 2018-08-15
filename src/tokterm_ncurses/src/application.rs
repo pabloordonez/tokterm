@@ -3,15 +3,23 @@ use ncurses::cbreak;
 use ncurses::constants::BUTTON1_CLICKED;
 use ncurses::constants::BUTTON1_DOUBLE_CLICKED;
 use ncurses::constants::BUTTON1_PRESSED;
+use ncurses::constants::BUTTON1_RELEASED;
 use ncurses::constants::BUTTON2_CLICKED;
 use ncurses::constants::BUTTON2_DOUBLE_CLICKED;
 use ncurses::constants::BUTTON2_PRESSED;
+use ncurses::constants::BUTTON2_RELEASED;
 use ncurses::constants::BUTTON3_CLICKED;
 use ncurses::constants::BUTTON3_DOUBLE_CLICKED;
 use ncurses::constants::BUTTON3_PRESSED;
+use ncurses::constants::BUTTON3_RELEASED;
 use ncurses::constants::BUTTON4_CLICKED;
 use ncurses::constants::BUTTON4_DOUBLE_CLICKED;
 use ncurses::constants::BUTTON4_PRESSED;
+use ncurses::constants::BUTTON4_RELEASED;
+use ncurses::constants::BUTTON5_CLICKED;
+use ncurses::constants::BUTTON5_DOUBLE_CLICKED;
+use ncurses::constants::BUTTON5_PRESSED;
+use ncurses::constants::BUTTON5_RELEASED;
 use ncurses::constants::ALL_MOUSE_EVENTS;
 use ncurses::constants::ERR;
 use ncurses::constants::KEY_MOUSE;
@@ -48,6 +56,15 @@ pub struct NCursesApplication {
     event_queue: EventQueue,
     mouse_state: MouseState,
     keyboard_state: KeyboardState,
+
+    /////////////////////////////////////////
+    // mouse state hack
+    /////////////////////////////////////////
+    left_button: bool,
+    middle_button: bool,
+    right_button: bool,
+    extra_button_1: bool,
+    position: Point2d,
 }
 
 impl NCursesApplication {
@@ -59,6 +76,11 @@ impl NCursesApplication {
             event_queue: EventQueue::new(),
             mouse_state: MouseState::new(),
             keyboard_state: KeyboardState::new(),
+            left_button: false,
+            middle_button: false,
+            right_button: false,
+            extra_button_1: false,
+            position: Point2d::empty(),
         };
 
         if cbreak() == ERR {
@@ -88,9 +110,107 @@ impl NCursesApplication {
             Option::None,
         );
 
-        print!("\033[?1003h\n");
+        print!("\x1b[?1003h\n");
 
         Ok(application)
+    }
+
+    fn process_mouse_event(&mut self) -> Result<Event> {
+        let mut event: MEVENT = unsafe { zeroed() };
+
+        if getmouse(&mut event) == ERR {
+            return Err("Couldn't retrieve the mouse event.");
+        }
+
+        let release_1 = (event.bstate & 0b0000_0000_0000_0000_0001) != 0;
+        let press_1 = (event.bstate & 0b0000_0000_0000_0000_0010) != 0;
+        let click_1 = (event.bstate & 0b0000_0000_0000_0000_0100) != 0;
+        let double_click_1 = (event.bstate & 0b0000_0000_0000_0000_1000) != 0;
+        let triple_click_1 = (event.bstate & 0b0000_0000_0000_0001_0000) != 0;
+
+        let release_2 = (event.bstate & 0b0000_0000_0000_0100_0000) != 0;
+        let press_2 = (event.bstate & 0b0000_0000_0000_1000_0000) != 0;
+        let click_2 = (event.bstate & 0b0000_0000_0001_0000_0000) != 0;
+
+        let release_3 = (event.bstate & 0b0000_0000_0010_0000_0000) != 0;
+        let press_3 = (event.bstate & 0b0000_0000_0100_0000_0000) != 0;
+        let click_3 = (event.bstate & 0b0000_0000_1000_0000_0000) != 0;
+
+        let release_4 = (event.bstate & 0b0000_0001_0000_0000_0000) != 0;
+        let press_4 = (event.bstate & 0b0000_0010_0000_0000_0000) != 0;
+        let click_4 = (event.bstate & 0b0000_0100_0000_0000_0000) != 0;
+        let double_click_4 = (event.bstate & 0b0000_1000_0000_0000_0000) != 0;
+        let triple_click_4 = (event.bstate & 0b0001_0000_0000_0000_0000) != 0;
+
+        // wheel up 0x80000
+        let wheel_up = (event.bstate & 0x80000) != 0;
+        let wheel_down = (event.bstate & 0x8000000) != 0
+            && event.x as usize == self.position.x
+            && event.y as usize == self.position.y;
+
+        let mouse_event_type = if click_1 || click_2 || click_3 || click_4 {
+            MouseEventType::Click
+        } else if double_click_1 || double_click_4 || triple_click_1 || triple_click_4 {
+            MouseEventType::DoubleClick
+        } else if wheel_down || wheel_up {
+            MouseEventType::Wheel
+        } else {
+            MouseEventType::MouseMove
+        };
+
+        if press_1 {
+            self.left_button = true;
+        }
+
+        if release_1 {
+            self.left_button = false;
+        }
+
+        if press_2 {
+            self.middle_button = true;
+        }
+
+        if release_2 {
+            self.middle_button = false;
+        }
+
+        if press_3 {
+            self.extra_button_1 = true;
+        }
+
+        if release_3 {
+            self.extra_button_1 = false;
+        }
+
+        if press_4 {
+            self.right_button = true;
+        }
+
+        if release_4 {
+            self.right_button = false;
+        }
+
+        self.position.x = event.x as usize;
+        self.position.y = event.y as usize;
+
+        Ok(Event::Mouse(MouseEvent {
+            event_type: mouse_event_type,
+            left_button: self.left_button || click_1 || double_click_1 || triple_click_1,
+            middle_button: self.middle_button || click_2,
+            extra_button_1: self.extra_button_1 || click_3,
+            right_button: self.right_button || click_4 || double_click_4 || triple_click_4,
+            extra_button_2: false,
+            extra_button_3: false,
+            extra_button_4: false,
+            position: Point2d::new(event.x as usize, event.y as usize),
+            wheel_delta: if wheel_up {
+                -1
+            } else if wheel_down {
+                1
+            } else {
+                0
+            },
+        }))
     }
 }
 
@@ -139,7 +259,7 @@ impl Application for NCursesApplication {
         let c = wgetch(self.terminal.get_window());
         let event = match c {
             KEY_MOUSE => {
-                let event = process_mouse_event()?;
+                let event = self.process_mouse_event()?;
                 self.event_queue.add_event(event);
                 Some(event)
             }
@@ -154,40 +274,4 @@ impl Application for NCursesApplication {
 
         Ok(())
     }
-}
-
-fn process_mouse_event() -> Result<Event> {
-    let mut event: MEVENT = unsafe { zeroed() };
-
-    if getmouse(&mut event) == ERR {
-        return Err("Couldn't retrieve the mouse event.");
-    }
-    let mouse_event_type = if (event.bstate & BUTTON1_DOUBLE_CLICKED as u64) != 0
-        || (event.bstate & BUTTON2_DOUBLE_CLICKED as u64) != 0
-        || (event.bstate & BUTTON3_DOUBLE_CLICKED as u64) != 0
-        || (event.bstate & BUTTON4_DOUBLE_CLICKED as u64) != 0
-    {
-        MouseEventType::DoubleClick
-    } else if (event.bstate & BUTTON1_CLICKED as u64) != 0
-        || (event.bstate & BUTTON2_CLICKED as u64) != 0
-        || (event.bstate & BUTTON3_CLICKED as u64) != 0
-        || (event.bstate & BUTTON4_CLICKED as u64) != 0
-    {
-        MouseEventType::DoubleClick
-    } else {
-        MouseEventType::MouseMove
-    };
-
-    Ok(Event::Mouse(MouseEvent {
-        event_type: mouse_event_type,
-        left_button: (event.bstate & BUTTON1_PRESSED as u64) != 0,
-        middle_button: (event.bstate & BUTTON2_PRESSED as u64) != 0,
-        right_button: (event.bstate & BUTTON3_PRESSED as u64) != 0,
-        extra_button_1: (event.bstate & BUTTON4_PRESSED as u64) != 0,
-        extra_button_2: false,
-        extra_button_3: false,
-        extra_button_4: false,
-        position: Point2d::new(event.x as usize, event.y as usize),
-        wheel_delta: 0,
-    }))
 }

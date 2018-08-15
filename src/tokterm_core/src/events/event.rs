@@ -9,8 +9,7 @@ pub enum MouseEventType {
     MouseMove,
     Click,
     DoubleClick,
-    HorizontalWheel,
-    VerticalWheel,
+    Wheel,
 }
 
 /// Enumerates all the possible keyboard event types.
