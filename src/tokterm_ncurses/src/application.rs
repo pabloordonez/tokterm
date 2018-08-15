@@ -1,4 +1,5 @@
-use mouse::UnixMouse;
+use mouse::NCursesMouse;
+use ncurses::cbreak;
 use ncurses::constants::BUTTON1_CLICKED;
 use ncurses::constants::BUTTON1_DOUBLE_CLICKED;
 use ncurses::constants::BUTTON1_PRESSED;
@@ -16,13 +17,16 @@ use ncurses::constants::ERR;
 use ncurses::constants::KEY_MOUSE;
 use ncurses::constants::REPORT_MOUSE_POSITION;
 use ncurses::getmouse;
+use ncurses::has_colors;
 use ncurses::keypad;
 use ncurses::mousemask;
+use ncurses::nodelay;
+use ncurses::noecho;
+use ncurses::start_color;
 use ncurses::wgetch;
-use ncurses::wtimeout;
 use ncurses::MEVENT;
 use std::mem::zeroed;
-use terminal::UnixTerminal;
+use terminal::NCursesTerminal;
 use tokterm_core::drawing::point_2d::Point2d;
 use tokterm_core::events::event::Event;
 use tokterm_core::events::event::MouseEvent;
@@ -35,28 +39,35 @@ use tokterm_core::system::mouse::Mouse;
 use tokterm_core::system::terminal::Terminal;
 use tokterm_core::system::window::Window;
 use tokterm_core::Result;
-use window::UnixWindow;
-use ncurses::nodelay;
+use window::NCursesWindow;
 
-pub struct UnixApplication {
-    terminal: UnixTerminal,
-    window: UnixWindow,
-    mouse: UnixMouse,
+pub struct NCursesApplication {
+    terminal: NCursesTerminal,
+    window: NCursesWindow,
+    mouse: NCursesMouse,
     event_queue: EventQueue,
     mouse_state: MouseState,
     keyboard_state: KeyboardState,
 }
 
-impl UnixApplication {
-    pub fn create() -> Result<UnixApplication> {
-        let application = UnixApplication {
-            terminal: UnixTerminal::create()?,
-            window: UnixWindow::new(),
-            mouse: UnixMouse::new(),
+impl NCursesApplication {
+    pub fn create() -> Result<NCursesApplication> {
+        let application = NCursesApplication {
+            terminal: NCursesTerminal::create()?,
+            window: NCursesWindow::new(),
+            mouse: NCursesMouse::new(),
             event_queue: EventQueue::new(),
             mouse_state: MouseState::new(),
             keyboard_state: KeyboardState::new(),
         };
+
+        if cbreak() == ERR {
+            return Err("Couldn't change the input mode.");
+        }
+
+        if noecho() == ERR {
+            return Err("Couldn't deactivate echo.");
+        }
 
         if nodelay(application.terminal.get_window(), true) == ERR {
             return Err("Couldn't activate the no-delay option.");
@@ -66,19 +77,32 @@ impl UnixApplication {
             return Err("Couldn't enable keypad.");
         }
 
+        if !has_colors() {
+            return Err("The terminal does not support color.");
+        }
+
+        start_color();
+
         mousemask(
             (ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION) as u64,
             Option::None,
         );
 
+        print!("\033[?1003h\n");
+
         Ok(application)
     }
 }
 
-impl Application for UnixApplication {
+impl Application for NCursesApplication {
     #[inline]
     fn get_terminal(&self) -> &Terminal {
         &self.terminal
+    }
+
+    #[inline]
+    fn get_mut_terminal(&mut self) -> &mut Terminal {
+        &mut self.terminal
     }
 
     #[inline]

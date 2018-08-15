@@ -28,7 +28,7 @@ name = "tokterm"
 version = "0.1.0"
 dependencies = [
  "tokterm_core 0.1.0",
- "tokterm_unix 0.1.0",
+ "tokterm_ncurses 0.1.0",
  "tokterm_windows 0.1.0",
 ]
 
@@ -37,7 +37,7 @@ name = "tokterm_core"
 version = "0.1.0"
 
 [[package]]
-name = "tokterm_unix"
+name = "tokterm_ncurses"
 version = "0.1.0"
 dependencies = [
  "ncurses 5.94.0 (registry+https://github.com/rust-lang/crates.io-index)",

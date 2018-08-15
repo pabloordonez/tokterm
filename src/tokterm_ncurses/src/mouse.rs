@@ -1,15 +1,15 @@
 use tokterm_core::drawing::point_2d::Point2d;
 use tokterm_core::system::mouse::Mouse;
 
-pub struct UnixMouse {}
+pub struct NCursesMouse {}
 
-impl UnixMouse {
-    pub fn new() -> UnixMouse {
-        UnixMouse {}
+impl NCursesMouse {
+    pub fn new() -> NCursesMouse {
+        NCursesMouse {}
     }
 }
 
-impl Mouse for UnixMouse {
+impl Mouse for NCursesMouse {
     fn get_absolute_position(&self) -> Result<Point2d, &'static str> {
         unimplemented!()
     }

@@ -9,6 +9,8 @@ use Result;
 pub trait Application {
     fn get_terminal(&self) -> &Terminal;
 
+    fn get_mut_terminal(&mut self) -> &mut Terminal;
+
     fn get_window(&self) -> &Window;
 
     fn get_mouse(&self) -> &Mouse;

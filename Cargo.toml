@@ -12,6 +12,7 @@ version="0.1.0"
 tokterm_windows = { path = "src/tokterm_windows",  version = "0.1.0" }
 
 [target.'cfg(unix)'.dependencies]
-tokterm_unix = { path = "src/tokterm_unix", version = "0.1.0" }
+#tokterm_termion = { path = "src/tokterm_termion", version = "0.1.0" }
+tokterm_ncurses = { path = "src/tokterm_ncurses", version = "0.1.0" }
 
 

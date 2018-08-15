@@ -9,10 +9,10 @@ pub trait Terminal {
     fn dispose(&self) -> Result<()>;
 
     /// Shows or hides the cursor.
-    fn set_cursor_visibility(&self, visible: bool) -> Result<()>;
+    fn set_cursor_visibility(&mut self, visible: bool) -> Result<()>;
 
     /// Moves the console cursor to a given position.
-    fn set_cursor(&self, positon: Point2d) -> Result<()>;
+    fn set_cursor(&mut self, position: Point2d) -> Result<()>;
 
     /// Gets the current console size in character units.
     fn get_console_size(&self) -> Result<Size2d>;
@@ -21,8 +21,8 @@ pub trait Terminal {
     fn get_char_size(&self, window: &Window) -> Result<Size2d>;
 
     /// Clears the console screen.
-    fn clear(&self) -> Result<()>;
+    fn clear(&mut self) -> Result<()>;
 
     /// Draws a `CellBuffer` to the screen.
-    fn write(&self, cell_buffer: &CellBuffer) -> Result<()>;
+    fn write(&mut self, cell_buffer: &mut CellBuffer) -> Result<()>;
 }

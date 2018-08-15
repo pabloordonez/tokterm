@@ -2,15 +2,15 @@ use tokterm_core::drawing::point_2d::Point2d;
 use tokterm_core::drawing::size_2d::Size2d;
 use tokterm_core::system::window::Window;
 
-pub struct UnixWindow {}
+pub struct NCursesWindow {}
 
-impl UnixWindow {
-    pub fn new() -> UnixWindow {
-        UnixWindow {}
+impl NCursesWindow {
+    pub fn new() -> NCursesWindow {
+        NCursesWindow {}
     }
 }
 
-impl Window for UnixWindow {
+impl Window for NCursesWindow {
     fn get_window_client_size(&self) -> Result<Size2d, &'static str> {
         unimplemented!()
     }

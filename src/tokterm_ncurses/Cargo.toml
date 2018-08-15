@@ -1,5 +1,5 @@
 [package]
-name = "tokterm_unix"
+name = "tokterm_ncurses"
 version = "0.1.0"
 authors = ["Pablo Ordoñez <pabloo84@gmail.com>"]
 
@@ -8,5 +8,4 @@ path="../tokterm_core"
 version="0.1.0"
 
 [target.'cfg(unix)'.dependencies]
-#rustbox = "*"
 ncurses ="*"

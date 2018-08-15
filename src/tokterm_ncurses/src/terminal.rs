@@ -1,19 +1,15 @@
 use color::color_to_i16;
 use color::ColorPair;
 use ncurses::attron;
-use ncurses::cbreak;
 use ncurses::clear;
 use ncurses::constants::ERR;
 use ncurses::curs_set;
 use ncurses::endwin;
 use ncurses::getmaxyx;
-use ncurses::has_colors;
 use ncurses::init_pair;
 use ncurses::initscr;
 use ncurses::mvwaddch;
-use ncurses::noecho;
 use ncurses::refresh;
-use ncurses::start_color;
 use ncurses::wmove;
 use ncurses::COLOR_PAIR;
 use ncurses::CURSOR_VISIBILITY;
@@ -26,28 +22,13 @@ use tokterm_core::system::terminal::Terminal;
 use tokterm_core::system::window::Window;
 use tokterm_core::Result;
 
-pub struct UnixTerminal {
+pub struct NCursesTerminal {
     window: WINDOW,
 }
 
-impl UnixTerminal {
-    pub fn create() -> Result<UnixTerminal> {
-        let window = initscr();
-
-        if cbreak() == ERR {
-            return Err("Couldn't change the input mode.");
-        }
-
-        if noecho() == ERR {
-            return Err("Couldn't deactivate echo.");
-        }
-
-        if !has_colors() {
-            return Err("The terminal does not support color.");
-        }
-
-        start_color();
-        Ok(UnixTerminal { window })
+impl NCursesTerminal {
+    pub fn create() -> Result<NCursesTerminal> {
+        Ok(NCursesTerminal { window: initscr() })
     }
 
     #[inline]
@@ -56,7 +37,7 @@ impl UnixTerminal {
     }
 }
 
-impl Terminal for UnixTerminal {
+impl Terminal for NCursesTerminal {
     /// Disposes the terminal object-
     fn dispose(&self) -> Result<()> {
         if endwin() == ERR {
@@ -67,7 +48,7 @@ impl Terminal for UnixTerminal {
     }
 
     /// Shows or hides the cursor.
-    fn set_cursor_visibility(&self, visible: bool) -> Result<()> {
+    fn set_cursor_visibility(&mut self, visible: bool) -> Result<()> {
         match curs_set(if visible {
             CURSOR_VISIBILITY::CURSOR_VISIBLE
         } else {
@@ -79,8 +60,8 @@ impl Terminal for UnixTerminal {
     }
 
     /// Moves the console cursor to a given position.
-    fn set_cursor(&self, positon: Point2d) -> Result<()> {
-        if wmove(self.window, positon.x as i32, positon.y as i32) != ERR {
+    fn set_cursor(&mut self, position: Point2d) -> Result<()> {
+        if wmove(self.window, position.x as i32, position.y as i32) != ERR {
             Ok(())
         } else {
             Err("Couldn't set the cursor position.")
@@ -103,7 +84,7 @@ impl Terminal for UnixTerminal {
     }
 
     /// Clears the console screen.
-    fn clear(&self) -> Result<()> {
+    fn clear(&mut self) -> Result<()> {
         if clear() != ERR {
             Ok(())
         } else {
@@ -112,7 +93,7 @@ impl Terminal for UnixTerminal {
     }
 
     /// Draws a `CellBuffer` to the screen.
-    fn write(&self, cell_buffer: &CellBuffer) -> Result<()> {
+    fn write(&mut self, cell_buffer: &mut CellBuffer) -> Result<()> {
         let mut colors: HashMap<ColorPair, i16> = HashMap::new();
         let mut pair_index: i16 = 0;
         let mut index: usize = 0;

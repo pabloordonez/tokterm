@@ -85,6 +85,11 @@ impl Application for WindowsApplication {
     }
 
     #[inline]
+    fn get_mut_terminal(&mut self) -> &mut Terminal {
+        &mut self.terminal
+    }
+
+    #[inline]
     fn get_window(&self) -> &Window {
         &self.window
     }
@@ -145,17 +150,17 @@ impl Application for WindowsApplication {
         for input_record in input_records.iter() {
             let event = match input_record.EventType {
                 KEY_EVENT => {
-                    let event = process_key_events(input_record);
+                    let event = process_key_event(input_record);
                     self.event_queue.add_event(event);
                     event
                 }
                 MOUSE_EVENT => {
-                    let event = process_mouse_events(input_record);
+                    let event = process_mouse_event(input_record);
                     self.event_queue.add_event(event);
                     event
                 }
                 FOCUS_EVENT => {
-                    let event = process_window_events(&self.window)?;
+                    let event = process_window_event(&self.window)?;
                     self.event_queue.add_event(event);
                     event
                 }
@@ -174,7 +179,7 @@ impl Application for WindowsApplication {
 }
 
 #[inline]
-fn process_key_events(input_record: &INPUT_RECORD) -> Event {
+fn process_key_event(input_record: &INPUT_RECORD) -> Event {
     let keyboard_event = unsafe { input_record.Event.KeyEvent() };
 
     Event::Keyboard(KeyboardEvent {
@@ -196,7 +201,7 @@ fn process_key_events(input_record: &INPUT_RECORD) -> Event {
 }
 
 #[inline]
-fn process_mouse_events(input_record: &INPUT_RECORD) -> Event {
+fn process_mouse_event(input_record: &INPUT_RECORD) -> Event {
     let mouse_event = unsafe { input_record.Event.MouseEvent() };
 
     Event::Mouse(MouseEvent {
@@ -224,7 +229,7 @@ fn process_mouse_events(input_record: &INPUT_RECORD) -> Event {
 }
 
 #[inline]
-fn process_window_events(window: &WindowsWindow) -> Result<Event> {
+fn process_window_event(window: &WindowsWindow) -> Result<Event> {
     Ok(Event::Window(WindowEvent {
         event_type: WindowEventType::WindowFocus,
         position: window.get_window_position()?,

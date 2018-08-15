@@ -82,7 +82,7 @@ impl Terminal for WindowsTerminal {
         Ok(())
     }
 
-    fn set_cursor_visibility(&self, visible: bool) -> Result<()> {
+    fn set_cursor_visibility(&mut self, visible: bool) -> Result<()> {
         let mut console_cursor_info = CONSOLE_CURSOR_INFO::empty();
         let success = unsafe { GetConsoleCursorInfo(self.output_handle, &mut console_cursor_info) };
 
@@ -101,7 +101,7 @@ impl Terminal for WindowsTerminal {
         Ok(())
     }
 
-    fn set_cursor(&self, position: Point2d) -> Result<()> {
+    fn set_cursor(&mut self, position: Point2d) -> Result<()> {
         let success: i32 = unsafe {
             SetConsoleCursorPosition(
                 self.output_handle,
@@ -151,7 +151,7 @@ impl Terminal for WindowsTerminal {
         ))
     }
 
-    fn clear(&self) -> Result<()> {
+    fn clear(&mut self) -> Result<()> {
         let size = self.get_console_size()?;
         let width = size.width as i16;
         let height = size.height as i16;
@@ -190,7 +190,7 @@ impl Terminal for WindowsTerminal {
         Ok(())
     }
 
-    fn write(&self, cell_buffer: &CellBuffer) -> Result<()> {
+    fn write(&mut self, cell_buffer: &mut CellBuffer) -> Result<()> {
         // TODO: prevent from creating this char once per frame.
         //       each buffer should store his native representation
         //       and let the representation be updated when needed.

@@ -17,7 +17,7 @@ impl Cell {
         }
     }
 
-    pub fn new_default(character: char) -> Cell {
+    pub fn default(character: char) -> Cell {
         Cell {
             character,
             background: Color::Black,
