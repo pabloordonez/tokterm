@@ -24,6 +24,12 @@ use ncurses::constants::ALL_MOUSE_EVENTS;
 use ncurses::constants::ERR;
 use ncurses::constants::KEY_MOUSE;
 use ncurses::constants::REPORT_MOUSE_POSITION;
+use ncurses::constants::{
+    KEY_F0, KEY_F1, KEY_F10, KEY_F11, KEY_F12, KEY_F13, KEY_F14, KEY_F15, KEY_F2, KEY_F3, KEY_F4,
+    KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_BACKSPACE, KEY_BREAK, KEY_CANCEL, KEY_CLEAR,
+    KEY_DC, KEY_DOWN, KEY_EIC, KEY_ENTER, KEY_HOME, KEY_NPAGE, KEY_PPAGE, KEY_PRINT, KEY_RIGHT,
+    KEY_SLEFT, KEY_UP,
+};
 use ncurses::getmouse;
 use ncurses::has_colors;
 use ncurses::keypad;
@@ -37,9 +43,12 @@ use std::mem::zeroed;
 use terminal::NCursesTerminal;
 use tokterm_core::drawing::point_2d::Point2d;
 use tokterm_core::events::event::Event;
+use tokterm_core::events::event::KeyboardEvent;
+use tokterm_core::events::event::KeyboardEventType;
 use tokterm_core::events::event::MouseEvent;
 use tokterm_core::events::event::MouseEventType;
 use tokterm_core::events::event_queue::EventQueue;
+use tokterm_core::input::key::Key;
 use tokterm_core::input::keyboard_state::KeyboardState;
 use tokterm_core::input::mouse_state::MouseState;
 use tokterm_core::system::application::Application;
@@ -113,6 +122,27 @@ impl NCursesApplication {
         print!("\x1b[?1003h\n");
 
         Ok(application)
+    }
+
+    fn process_key_event(&self, key_event: i32) -> Option<Event> {
+        let key = get_key(key_event);
+
+        if key == Key::None {
+            return Option::None;
+        }
+
+        Some(Event::Keyboard(KeyboardEvent {
+            event_type: KeyboardEventType::KeyDown,
+            key,
+            key_code: key_event as u16,
+            character: get_character(key_event),
+            left_control: false,
+            left_shift: false,
+            left_menu: false,
+            right_control: false,
+            right_shift: false,
+            right_menu: false,
+        }))
     }
 
     fn process_mouse_event(&mut self) -> Result<Event> {
@@ -263,7 +293,14 @@ impl Application for NCursesApplication {
                 self.event_queue.add_event(event);
                 Some(event)
             }
-            _ => None,
+            _ => {
+                let event = match self.process_key_event(c) {
+                    Some(event) => event,
+                    None => return Ok(()),
+                };
+                self.event_queue.add_event(event);
+                Some(event)
+            }
         };
 
         match event {
@@ -273,5 +310,146 @@ impl Application for NCursesApplication {
         };
 
         Ok(())
+    }
+}
+
+fn get_key(event: i32) -> Key {
+    match event {
+        KEY_BREAK => Key::Pause,    /* Break key(unreliable) */
+        KEY_DOWN => Key::Down,      /* down-arrow key */
+        KEY_UP => Key::Up,          /* up-arrow key */
+        KEY_LEFT => Key::Left,      /* left-arrow key */
+        KEY_RIGHT => Key::Right,    /* right-arrow key */
+        KEY_HOME => Key::Home,      /* home key */
+        KEY_BACKSPACE => Key::Back, /* backspace key */
+        KEY_F1 => Key::F1,
+        KEY_F2 => Key::F2,
+        KEY_F3 => Key::F3,
+        KEY_F4 => Key::F4,
+        KEY_F5 => Key::F5,
+        KEY_F6 => Key::F6,
+        KEY_F7 => Key::F7,
+        KEY_F8 => Key::F8,
+        KEY_F9 => Key::F9,
+        KEY_F10 => Key::F10,
+        KEY_F11 => Key::F11,
+        KEY_F12 => Key::F12,
+        KEY_F13 => Key::F13,
+        KEY_F14 => Key::F14,
+        KEY_F15 => Key::F15,
+        KEY_DC => Key::Delete,     /* delete-character key */
+        KEY_EIC => Key::Insert,    /* insert-character key */
+        KEY_CLEAR => Key::Clear,   /* clear-screen or erase key */
+        KEY_NPAGE => Key::Next,    /* next-page key */
+        KEY_PPAGE => Key::Prior,   /* previous-page key */
+        KEY_ENTER => Key::Return,  /* enter/send key */
+        KEY_PRINT => Key::Print,   /* print key */
+        KEY_CANCEL => Key::Cancel, /* cancel key */
+        65 | 97 => Key::A,
+        66 | 98 => Key::B,
+        67 | 99 => Key::C,
+        68 | 100 => Key::D,
+        69 | 101 => Key::E,
+        70 | 102 => Key::F,
+        71 | 103 => Key::G,
+        72 | 104 => Key::H,
+        73 | 105 => Key::I,
+        74 | 106 => Key::J,
+        75 | 107 => Key::K,
+        76 | 108 => Key::L,
+        77 | 109 => Key::M,
+        78 | 110 => Key::N,
+        79 | 111 => Key::O,
+        80 | 112 => Key::P,
+        81 | 113 => Key::Q,
+        82 | 114 => Key::R,
+        83 | 115 => Key::S,
+        84 | 116 => Key::T,
+        85 | 117 => Key::U,
+        86 | 118 => Key::V,
+        87 | 119 => Key::W,
+        88 | 120 => Key::X,
+        89 | 121 => Key::Y,
+        90 | 122 => Key::Z,
+        48 => Key::Key0,
+        49 => Key::Key1,
+        50 => Key::Key2,
+        51 => Key::Key3,
+        52 => Key::Key4,
+        53 => Key::Key5,
+        54 => Key::Key6,
+        55 => Key::Key7,
+        56 => Key::Key8,
+        57 => Key::Key9,
+        9 => Key::Tab,
+        _ => Key::None,
+    }
+}
+
+fn get_character(event: i32) -> char {
+    match event {
+        65 => 'A',
+        66 => 'B',
+        67 => 'C',
+        68 => 'D',
+        69 => 'E',
+        70 => 'F',
+        71 => 'G',
+        72 => 'H',
+        73 => 'I',
+        74 => 'J',
+        75 => 'K',
+        76 => 'L',
+        77 => 'M',
+        78 => 'N',
+        79 => 'O',
+        80 => 'P',
+        81 => 'Q',
+        82 => 'R',
+        83 => 'S',
+        84 => 'T',
+        85 => 'U',
+        86 => 'V',
+        87 => 'W',
+        88 => 'X',
+        89 => 'Y',
+        90 => 'Z',
+        97 => 'a',
+        98 => 'b',
+        99 => 'c',
+        100 => 'd',
+        101 => 'e',
+        102 => 'f',
+        103 => 'g',
+        104 => 'h',
+        105 => 'i',
+        106 => 'j',
+        107 => 'k',
+        108 => 'l',
+        109 => 'm',
+        110 => 'n',
+        111 => 'o',
+        112 => 'p',
+        113 => 'q',
+        114 => 'r',
+        115 => 's',
+        116 => 't',
+        117 => 'u',
+        118 => 'v',
+        119 => 'w',
+        120 => 'x',
+        121 => 'y',
+        122 => 'z',
+        48 => '0',
+        49 => '1',
+        50 => '2',
+        51 => '3',
+        52 => '4',
+        53 => '5',
+        54 => '6',
+        55 => '7',
+        56 => '8',
+        57 => '9',
+        _ => ' ',
     }
 }
