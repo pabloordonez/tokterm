@@ -1,25 +1,5 @@
 use mouse::NCursesMouse;
 use ncurses::cbreak;
-use ncurses::constants::BUTTON1_CLICKED;
-use ncurses::constants::BUTTON1_DOUBLE_CLICKED;
-use ncurses::constants::BUTTON1_PRESSED;
-use ncurses::constants::BUTTON1_RELEASED;
-use ncurses::constants::BUTTON2_CLICKED;
-use ncurses::constants::BUTTON2_DOUBLE_CLICKED;
-use ncurses::constants::BUTTON2_PRESSED;
-use ncurses::constants::BUTTON2_RELEASED;
-use ncurses::constants::BUTTON3_CLICKED;
-use ncurses::constants::BUTTON3_DOUBLE_CLICKED;
-use ncurses::constants::BUTTON3_PRESSED;
-use ncurses::constants::BUTTON3_RELEASED;
-use ncurses::constants::BUTTON4_CLICKED;
-use ncurses::constants::BUTTON4_DOUBLE_CLICKED;
-use ncurses::constants::BUTTON4_PRESSED;
-use ncurses::constants::BUTTON4_RELEASED;
-use ncurses::constants::BUTTON5_CLICKED;
-use ncurses::constants::BUTTON5_DOUBLE_CLICKED;
-use ncurses::constants::BUTTON5_PRESSED;
-use ncurses::constants::BUTTON5_RELEASED;
 use ncurses::constants::ALL_MOUSE_EVENTS;
 use ncurses::constants::ERR;
 use ncurses::constants::KEY_MOUSE;
@@ -27,8 +7,8 @@ use ncurses::constants::REPORT_MOUSE_POSITION;
 use ncurses::constants::{
     KEY_F0, KEY_F1, KEY_F10, KEY_F11, KEY_F12, KEY_F13, KEY_F14, KEY_F15, KEY_F2, KEY_F3, KEY_F4,
     KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_BACKSPACE, KEY_BREAK, KEY_CANCEL, KEY_CLEAR,
-    KEY_DC, KEY_DOWN, KEY_EIC, KEY_ENTER, KEY_HOME, KEY_NPAGE, KEY_PPAGE, KEY_PRINT, KEY_RIGHT,
-    KEY_SLEFT, KEY_UP,
+    KEY_DC, KEY_DOWN, KEY_EIC, KEY_ENTER, KEY_HOME, KEY_LEFT, KEY_NPAGE, KEY_PPAGE, KEY_PRINT,
+    KEY_RIGHT, KEY_UP,
 };
 use ncurses::getmouse;
 use ncurses::has_colors;
@@ -132,7 +112,7 @@ impl NCursesApplication {
         }
 
         Some(Event::Keyboard(KeyboardEvent {
-            event_type: KeyboardEventType::KeyDown,
+            event_type: KeyboardEventType::KeyUp,
             key,
             key_code: key_event as u16,
             character: get_character(key_event),

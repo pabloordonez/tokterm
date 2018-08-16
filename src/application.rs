@@ -75,19 +75,21 @@ pub fn execute(application: &mut Application) -> Result<()> {
 }
 
 fn draw_stats(application: &Application, buffer: &mut CellBuffer, fps: i32) -> Result<()> {
-    let text_background = Cell::new('-', Color::White, Color::DarkGrey);
-    let separator = Cell::new('_', Color::Black, Color::DarkGrey);
+    let text_background = Cell::new(' ', Color::White, Color::DarkGrey);
+    let top_separator = Cell::new('\u{2500}', Color::Grey, Color::DarkGrey);
+    let bottom_separator = Cell::new('\u{2500}', Color::Black, Color::DarkGrey);
     let terminal = application.get_terminal();
     let console_size = terminal.get_console_size()?;
 
-    buffer.repeat_cell(text_background, Point2d::new(0, 0), console_size.width);
-    buffer.repeat_cell(separator, Point2d::new(0, 1), console_size.width);
+    buffer.repeat_cell(top_separator, Point2d::new(0, 0), console_size.width);
+    buffer.repeat_cell(text_background, Point2d::new(0, 1), console_size.width);
+    buffer.repeat_cell(bottom_separator, Point2d::new(0, 2), console_size.width);
     buffer.write_str(
         &format!(
             "FPS: {}   Console({}, {})",
             fps, console_size.width, console_size.height,
         ),
-        Point2d::new(0, 0),
+        Point2d::new(0, 1),
         text_background.foreground,
         text_background.background,
     );
