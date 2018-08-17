@@ -1,3 +1,4 @@
+pub mod canvas;
 pub mod cell;
 pub mod cell_buffer;
 pub mod color;

@@ -1,6 +1,7 @@
 use color::color_to_i16;
 use color::ColorPair;
 use ncurses::attron;
+use ncurses::chtype;
 use ncurses::clear;
 use ncurses::constants::ERR;
 use ncurses::curs_set;
@@ -10,7 +11,9 @@ use ncurses::init_pair;
 use ncurses::initscr;
 use ncurses::mvwaddch;
 use ncurses::refresh;
+use ncurses::setlocale;
 use ncurses::wmove;
+use ncurses::LcCategory;
 use ncurses::COLOR_PAIR;
 use ncurses::CURSOR_VISIBILITY;
 use ncurses::WINDOW;
@@ -28,7 +31,9 @@ pub struct NCursesTerminal {
 
 impl NCursesTerminal {
     pub fn create() -> Result<NCursesTerminal> {
-        Ok(NCursesTerminal { window: initscr() })
+        let window = initscr();
+        setlocale(LcCategory::all, "");
+        Ok(NCursesTerminal { window })
     }
 
     #[inline]
@@ -117,7 +122,7 @@ impl Terminal for NCursesTerminal {
                 self.window,
                 position.y as i32,
                 position.x as i32,
-                cell.character as u64,
+                cell.character as chtype,
             );
 
             index += 1;

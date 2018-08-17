@@ -7,5 +7,6 @@ authors = ["Pablo Ordoñez <pabloo84@gmail.com>"]
 path="../tokterm_core"
 version="0.1.0"
 
-[target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3.5", features = ["winnt", "winbase", "winuser", "wincon", "consoleapi", "fileapi", "handleapi", "processenv"] }
+[dependencies.winapi]
+version = "0.3.5"
+features = ["winnt", "winbase", "winuser", "wincon", "consoleapi", "fileapi", "handleapi", "processenv"]

@@ -172,7 +172,7 @@ impl NCursesApplication {
             self.left_button = true;
         }
 
-        if release_1 {
+        if release_1 || click_1 || double_click_1 || triple_click_1 {
             self.left_button = false;
         }
 
@@ -180,7 +180,7 @@ impl NCursesApplication {
             self.middle_button = true;
         }
 
-        if release_2 {
+        if release_2 || click_2 {
             self.middle_button = false;
         }
 
@@ -188,7 +188,7 @@ impl NCursesApplication {
             self.extra_button_1 = true;
         }
 
-        if release_3 {
+        if release_3 || click_3 {
             self.extra_button_1 = false;
         }
 
@@ -196,7 +196,7 @@ impl NCursesApplication {
             self.right_button = true;
         }
 
-        if release_4 {
+        if release_4 || click_4 || double_click_4 || triple_click_4 {
             self.right_button = false;
         }
 
@@ -212,7 +212,7 @@ impl NCursesApplication {
             extra_button_2: false,
             extra_button_3: false,
             extra_button_4: false,
-            position: Point2d::new(event.x as usize, event.y as usize),
+            position: self.position,
             wheel_delta: if wheel_up {
                 -1
             } else if wheel_down {

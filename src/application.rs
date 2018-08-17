@@ -1,8 +1,10 @@
 use std::time::{Duration, Instant};
+use tokterm_core::drawing::canvas::{Canvas, SolidPaint};
 use tokterm_core::drawing::cell::Cell;
 use tokterm_core::drawing::cell_buffer::CellBuffer;
 use tokterm_core::drawing::color::Color;
 use tokterm_core::drawing::point_2d::Point2d;
+use tokterm_core::drawing::size_2d::Size2d;
 use tokterm_core::events::event::KeyboardEvent;
 use tokterm_core::events::event::MouseEvent;
 use tokterm_core::events::event::{Event, KeyboardEventType, MouseEventType};
@@ -60,6 +62,9 @@ pub fn execute(application: &mut Application) -> Result<()> {
         // checks the app stats and draw them in the stat bar.
         draw_stats(application, &mut buffer, fps)?;
 
+        // test the canvas functionality.
+        draw_canvas(application, &mut buffer)?;
+
         // blits the buffer onto the terminal console.
         application.get_mut_terminal().write(&mut buffer)?;
 
@@ -76,8 +81,8 @@ pub fn execute(application: &mut Application) -> Result<()> {
 
 fn draw_stats(application: &Application, buffer: &mut CellBuffer, fps: i32) -> Result<()> {
     let text_background = Cell::new(' ', Color::White, Color::DarkGrey);
-    let top_separator = Cell::new('\u{2500}', Color::Grey, Color::DarkGrey);
-    let bottom_separator = Cell::new('\u{2500}', Color::Black, Color::DarkGrey);
+    let top_separator = Cell::new('─', Color::Grey, Color::DarkGrey);
+    let bottom_separator = Cell::new('─', Color::Black, Color::DarkGrey);
     let terminal = application.get_terminal();
     let console_size = terminal.get_console_size()?;
 
@@ -97,10 +102,46 @@ fn draw_stats(application: &Application, buffer: &mut CellBuffer, fps: i32) -> R
     Ok(())
 }
 
+fn draw_canvas(application: &Application, buffer: &mut CellBuffer) -> Result<()> {
+    let console_size = application.get_terminal().get_console_size()?;
+    let x = 0;
+    let y = 3;
+    let width = console_size.width - 1;
+    let height = console_size.height - 1;
+
+    let stroke = SolidPaint::new(Cell::new('*', Color::White, Color::DarkGrey));
+    let fill = SolidPaint::new(Cell::new('#', Color::Red, Color::DarkRed));
+    let circle_stroke = SolidPaint::new(Cell::new('O', Color::Blue, Color::DarkBlue));
+    let circle_fill = SolidPaint::new(Cell::new('@', Color::Green, Color::DarkGreen));
+
+    let mut canvas = Canvas::new(buffer, Some(&stroke), Some(&fill));
+
+    canvas.move_to(Point2d::new(x, y));
+    canvas.line_to(Point2d::new(width, y))?;
+    canvas.line_to(Point2d::new(width, height))?;
+    canvas.line_to(Point2d::new(x, height))?;
+    canvas.line_to(Point2d::new(x, y))?;
+    canvas.line_to(Point2d::new(width, height))?;
+    canvas.move_to(Point2d::new(x, height));
+    canvas.line_to(Point2d::new(width, y))?;
+
+    canvas.fill_rect(Point2d::new(5, 10), Size2d::new(10, 5))?;
+    canvas.stroke_rect(Point2d::new(5, 10), Size2d::new(10, 5))?;
+
+    canvas.set_fill(&circle_fill);
+    canvas.set_stroke(&circle_stroke);
+
+    canvas.fill_circle(Point2d::new(25, 15), 8)?;
+    canvas.stroke_circle(Point2d::new(25, 15), 8)?;
+
+    Ok(())
+}
+
 fn process_mouse_events(mouse: MouseEvent, buffer: &mut CellBuffer) {
     if mouse.event_type == MouseEventType::MouseMove
         || mouse.event_type == MouseEventType::Click
-        || mouse.event_type == MouseEventType::DoubleClick {
+        || mouse.event_type == MouseEventType::DoubleClick
+    {
         if mouse.left_button {
             buffer.set(mouse.position, Cell::default('L'));
         }

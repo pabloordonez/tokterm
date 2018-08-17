@@ -20,6 +20,7 @@ impl CellBuffer {
         }
     }
 
+    #[inline]
     pub fn iter(&self) -> Iter<'_, Cell> {
         self.cells.iter()
     }
