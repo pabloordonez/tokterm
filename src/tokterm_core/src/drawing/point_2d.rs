@@ -26,6 +26,18 @@ impl Point2d {
         Point2d::new(self.x, self.y + y)
     }
 
+    pub fn sub(&self, point: Point2d) -> Point2d {
+        Point2d::new(self.x - point.x, self.y - point.y)
+    }
+
+    pub fn sub_x(&self, x: usize) -> Point2d {
+        Point2d::new(self.x - x, self.y)
+    }
+
+    pub fn sub_y(&self, y: usize) -> Point2d {
+        Point2d::new(self.x, self.y - y)
+    }
+
     pub fn equal_to(&self, point: Point2d) -> bool {
         self.x == point.x && self.y == point.y
     }

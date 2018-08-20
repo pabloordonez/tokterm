@@ -107,32 +107,33 @@ fn draw_canvas(application: &Application, buffer: &mut CellBuffer) -> Result<()>
     let x = 0;
     let y = 3;
     let width = console_size.width - 1;
-    let height = console_size.height - 1;
+    let height = console_size.height - y - 1;
+    let h_width  = width / 2;
+    let h_height = height / 2;
 
     let stroke = SolidPaint::new(Cell::new('*', Color::White, Color::DarkGrey));
-    let fill = SolidPaint::new(Cell::new('#', Color::Red, Color::DarkRed));
+    let fill = SolidPaint::new(Cell::new('#', Color::DarkGrey, Color::Black));
     let circle_stroke = SolidPaint::new(Cell::new('O', Color::Blue, Color::DarkBlue));
     let circle_fill = SolidPaint::new(Cell::new('@', Color::Green, Color::DarkGreen));
 
     let mut canvas = Canvas::new(buffer, Some(&stroke), Some(&fill));
 
-    canvas.move_to(Point2d::new(x, y));
-    canvas.line_to(Point2d::new(width, y))?;
-    canvas.line_to(Point2d::new(width, height))?;
-    canvas.line_to(Point2d::new(x, height))?;
-    canvas.line_to(Point2d::new(x, y))?;
-    canvas.line_to(Point2d::new(width, height))?;
-    canvas.move_to(Point2d::new(x, height));
-    canvas.line_to(Point2d::new(width, y))?;
+    canvas.fill_rect(Point2d::new(x, y), Size2d::new(width, height))?;
+    canvas.stroke_rect(Point2d::new(x, y), Size2d::new(width, height))?;
 
-    canvas.fill_rect(Point2d::new(5, 10), Size2d::new(10, 5))?;
-    canvas.stroke_rect(Point2d::new(5, 10), Size2d::new(10, 5))?;
+    canvas.move_to(Point2d::new(h_width, y));
+    canvas.line_to(Point2d::new(h_width, h_height - 10))?;
+    canvas.bezier_to(Point2d::new(h_width, h_height + 10), Point2d::new(width, h_height))?;
+    canvas.line_to(Point2d::new(h_width, height + y))?;
 
     canvas.set_fill(&circle_fill);
     canvas.set_stroke(&circle_stroke);
 
-    canvas.fill_circle(Point2d::new(25, 15), 8)?;
-    canvas.stroke_circle(Point2d::new(25, 15), 8)?;
+    canvas.fill_circle(Point2d::new(5, 5), 10)?;
+    canvas.stroke_circle(Point2d::new(5, 5), 10)?;
+
+    canvas.fill_ellipse(Point2d::new(5, 30), Size2d::new(20, 10))?;
+    canvas.stroke_ellipse(Point2d::new(5, 30), Size2d::new(20, 10))?;
 
     Ok(())
 }
