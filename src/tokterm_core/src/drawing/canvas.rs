@@ -67,22 +67,19 @@ impl<'a> Canvas<'a> {
             None => return Err("Can not draw a line without a stroke."),
         };
 
-        let mut x0 = self.position.x as i32;
-        let mut y0 = self.position.y as i32;
-        let x1 = position.x as i32;
-        let y1 = position.y as i32;
-        let dx: i32 = (x1 - x0).abs();
-        let dy: i32 = -(y1 - y0).abs();
-        let sx: i32 = if x0 < x1 { 1 } else { -1 };
-        let sy: i32 = if y0 < y1 { 1 } else { -1 };
-        let mut err: i32 = dx + dy;
+        let mut x0 = self.position.x;
+        let mut y0 = self.position.y;
+        let x1 = position.x;
+        let y1 = position.y;
+        let dx = (x1 - x0).abs();
+        let dy = -(y1 - y0).abs();
+        let sx = if x0 < x1 { 1 } else { -1 };
+        let sy = if y0 < y1 { 1 } else { -1 };
+        let mut err = dx + dy;
         let mut e2: i32;
 
         while x0 != x1 || y0 != y1 {
-            stroke.paint(
-                &mut self.cell_buffer,
-                Point2d::new(x0 as usize, y0 as usize),
-            );
+            stroke.paint(&mut self.cell_buffer, Point2d::new(x0, y0));
 
             e2 = 2 * err;
 
@@ -241,7 +238,7 @@ impl<'a> Canvas<'a> {
             err = dx + dy + xy as f64;
 
             while dy <= dx {
-                stroke.paint(self.cell_buffer, Point2d::new(x0 as usize, y0 as usize));
+                stroke.paint(self.cell_buffer, Point2d::new(x0, y0));
 
                 if x0 == x1 && y0 == y1 {
                     return Ok(());
@@ -263,8 +260,8 @@ impl<'a> Canvas<'a> {
             }
         }
 
-        self.move_to(Point2d::new(x0 as usize, y0 as usize));
-        self.line_to(Point2d::new(x1 as usize, y1 as usize))?;
+        self.move_to(Point2d::new(x0, y0));
+        self.line_to(Point2d::new(x1, y1))?;
         Ok(())
     }
 
@@ -276,8 +273,8 @@ impl<'a> Canvas<'a> {
 
         let x0 = position.x;
         let y0 = position.y;
-        let x1 = position.x + size.width;
-        let y1 = position.y + size.height;
+        let x1 = position.x + size.width as i32;
+        let y1 = position.y + size.height as i32;
 
         self.move_to(Point2d::new(x0, y0));
         self.line_to(Point2d::new(x1, y0))?;
@@ -296,8 +293,8 @@ impl<'a> Canvas<'a> {
 
         let x0 = position.x;
         let y0 = position.y;
-        let x1 = position.x + size.width;
-        let y1 = position.y + size.height;
+        let x1 = position.x + size.width as i32;
+        let y1 = position.y + size.height as i32;
 
         for y in y0..=y1 {
             for x in x0..=x1 {
@@ -308,11 +305,11 @@ impl<'a> Canvas<'a> {
         Ok(())
     }
 
-    pub fn stroke_circle(&mut self, position: Point2d, radius: usize) -> Result<()> {
-        return self.stroke_circle_from_center(position.add(Point2d::new(radius, radius)), radius);
+    pub fn stroke_circle(&mut self, position: Point2d, radius: u32) -> Result<()> {
+        return self.stroke_circle_from_center(position.add(Point2d::new(radius as i32, radius as i32)), radius);
     }
 
-    pub fn stroke_circle_from_center(&mut self, center: Point2d, radius: usize) -> Result<()> {
+    pub fn stroke_circle_from_center(&mut self, center: Point2d, radius: u32) -> Result<()> {
         let stroke = match self.stroke {
             Some(stroke) => stroke,
             None => return Err("Can not draw a circle without a stroke."),
@@ -326,13 +323,10 @@ impl<'a> Canvas<'a> {
         let mut err: i32 = 2 - 2 * r;
 
         while x <= 0 {
-            let ux = x as usize;
-            let uy = y as usize;
-
-            stroke.paint(&mut self.cell_buffer, Point2d::new(cx - ux, cy + uy));
-            stroke.paint(&mut self.cell_buffer, Point2d::new(cx - uy, cy - ux));
-            stroke.paint(&mut self.cell_buffer, Point2d::new(cx + ux, cy - uy));
-            stroke.paint(&mut self.cell_buffer, Point2d::new(cx + uy, cy + ux));
+            stroke.paint(&mut self.cell_buffer, Point2d::new(cx - x, cy + y));
+            stroke.paint(&mut self.cell_buffer, Point2d::new(cx - y, cy - x));
+            stroke.paint(&mut self.cell_buffer, Point2d::new(cx + x, cy - y));
+            stroke.paint(&mut self.cell_buffer, Point2d::new(cx + y, cy + x));
 
             r = err;
 
@@ -350,11 +344,11 @@ impl<'a> Canvas<'a> {
         Ok(())
     }
 
-    pub fn fill_circle(&mut self, position: Point2d, radius: usize) -> Result<()> {
-        return self.fill_circle_from_center(position.add(Point2d::new(radius, radius)), radius);
+    pub fn fill_circle(&mut self, position: Point2d, radius: u32) -> Result<()> {
+        return self.fill_circle_from_center(position.add(Point2d::new(radius as i32, radius as i32)), radius);
     }
 
-    pub fn fill_circle_from_center(&mut self, center: Point2d, radius: usize) -> Result<()> {
+    pub fn fill_circle_from_center(&mut self, center: Point2d, radius: u32) -> Result<()> {
         let fill = match self.fill {
             Some(fill) => fill,
             None => return Err("Can not fill a circle without a fill."),
@@ -368,10 +362,9 @@ impl<'a> Canvas<'a> {
         let mut err: i32 = 2 - 2 * r;
 
         while x <= 0 {
-            let ux = x as usize;
-            for uy in cy - y as usize..=cy + y as usize {
-                fill.paint(&mut self.cell_buffer, Point2d::new(cx + ux, uy));
-                fill.paint(&mut self.cell_buffer, Point2d::new(cx - ux, uy));
+            for iy in cy - y..=cy + y {
+                fill.paint(&mut self.cell_buffer, Point2d::new(cx + x, iy));
+                fill.paint(&mut self.cell_buffer, Point2d::new(cx - x, iy));
             }
 
             r = err;
@@ -392,7 +385,7 @@ impl<'a> Canvas<'a> {
 
     pub fn stroke_ellipse_from_center(&mut self, center: Point2d, size: Size2d) -> Result<()> {
         return self.stroke_ellipse(
-            center.sub(Point2d::new(size.width / 2, size.height / 2)),
+            center.add(Point2d::new(size.width as i32 / -2, size.height as i32 / -2)),
             size,
         );
     }
@@ -406,9 +399,9 @@ impl<'a> Canvas<'a> {
         let mut a = size.width as i32;
         let b = size.height as i32;
         let mut b1 = b & 1;
-        let mut x0 = position.x as i32;
-        let mut y0 = position.y as i32;
-        let mut x1 = position.x as i32 + a;
+        let mut x0 = position.x;
+        let mut y0 = position.y;
+        let mut x1 = position.x + a;
         let mut y1;
 
         let mut dx = 4 * (1 - a) * b * b;
@@ -417,20 +410,15 @@ impl<'a> Canvas<'a> {
         let mut e2;
 
         y0 += (b + 1) / 2;
-        y1 = y0 - b1; /* starting pixel */
+        y1 = y0 - b1;
         a *= 8 * a;
         b1 = 8 * b * b;
 
         while x0 <= x1 {
-            let ux0 = x0 as usize;
-            let uy0 = y0 as usize;
-            let ux1 = x1 as usize;
-            let uy1 = y1 as usize;
-
-            stroke.paint(&mut self.cell_buffer, Point2d::new(ux0, uy0));
-            stroke.paint(&mut self.cell_buffer, Point2d::new(ux0, uy1));
-            stroke.paint(&mut self.cell_buffer, Point2d::new(ux1, uy0));
-            stroke.paint(&mut self.cell_buffer, Point2d::new(ux1, uy1));
+            stroke.paint(&mut self.cell_buffer, Point2d::new(x0, y0));
+            stroke.paint(&mut self.cell_buffer, Point2d::new(x0, y1));
+            stroke.paint(&mut self.cell_buffer, Point2d::new(x1, y0));
+            stroke.paint(&mut self.cell_buffer, Point2d::new(x1, y1));
 
             e2 = 2 * err;
 
@@ -449,17 +437,11 @@ impl<'a> Canvas<'a> {
             }
         }
 
-        let ux0 = x0 as usize;
-        let ux1 = x1 as usize;
-
         while y0 - y1 < b {
-            let uy0 = y0 as usize;
-            let uy1 = y1 as usize;
-
-            stroke.paint(&mut self.cell_buffer, Point2d::new(ux0, uy0));
-            stroke.paint(&mut self.cell_buffer, Point2d::new(ux0, uy1));
-            stroke.paint(&mut self.cell_buffer, Point2d::new(ux1, uy0));
-            stroke.paint(&mut self.cell_buffer, Point2d::new(ux1, uy1));
+            stroke.paint(&mut self.cell_buffer, Point2d::new(x0, y0));
+            stroke.paint(&mut self.cell_buffer, Point2d::new(x0, y1));
+            stroke.paint(&mut self.cell_buffer, Point2d::new(x1, y0));
+            stroke.paint(&mut self.cell_buffer, Point2d::new(x1, y1));
 
             y0 += 1;
             y1 -= 1;
@@ -470,7 +452,7 @@ impl<'a> Canvas<'a> {
 
     pub fn fill_ellipse_from_center(&mut self, center: Point2d, size: Size2d) -> Result<()> {
         return self.fill_ellipse(
-            center.sub(Point2d::new(size.width / 2, size.height / 2)),
+            center.add(Point2d::new(size.width as i32 / -2, size.height as i32 / -2)),
             size,
         );
     }
@@ -484,9 +466,9 @@ impl<'a> Canvas<'a> {
         let mut a = size.width as i32;
         let b = size.height as i32;
         let mut b1 = b & 1;
-        let mut x0 = position.x as i32;
-        let mut y0 = position.y as i32;
-        let mut x1 = position.x as i32 + a;
+        let mut x0 = position.x;
+        let mut y0 = position.y;
+        let mut x1 = position.x + a;
         let mut y1;
 
         let mut dx = 4 * (1 - a) * b * b;
@@ -495,19 +477,14 @@ impl<'a> Canvas<'a> {
         let mut e2;
 
         y0 += (b + 1) / 2;
-        y1 = y0 - b1; /* starting pixel */
+        y1 = y0 - b1;
         a *= 8 * a;
         b1 = 8 * b * b;
 
         while x0 <= x1 {
-            let ux0 = x0 as usize;
-            let uy0 = y0 as usize;
-            let ux1 = x1 as usize;
-            let uy1 = y1 as usize;
-
-            for ux in ux0..=ux1 {
-                fill.paint(&mut self.cell_buffer, Point2d::new(ux, uy0));
-                fill.paint(&mut self.cell_buffer, Point2d::new(ux, uy1));
+            for ix in x0..=x1 {
+                fill.paint(&mut self.cell_buffer, Point2d::new(ix, y0));
+                fill.paint(&mut self.cell_buffer, Point2d::new(ix, y1));
             }
 
             e2 = 2 * err;
@@ -527,16 +504,10 @@ impl<'a> Canvas<'a> {
             }
         }
 
-        let ux0 = x0 as usize;
-        let ux1 = x1 as usize;
-
         while y0 - y1 < b {
-            let uy0 = y0 as usize;
-            let uy1 = y1 as usize;
-
-            for uy in uy0..=uy1 {
-                fill.paint(&mut self.cell_buffer, Point2d::new(ux0, uy));
-                fill.paint(&mut self.cell_buffer, Point2d::new(ux1, uy));
+            for iy in y0..=y1 {
+                fill.paint(&mut self.cell_buffer, Point2d::new(x0, iy));
+                fill.paint(&mut self.cell_buffer, Point2d::new(x1, iy));
             }
 
             y0 += 1;

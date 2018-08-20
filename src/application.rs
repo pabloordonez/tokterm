@@ -104,12 +104,12 @@ fn draw_stats(application: &Application, buffer: &mut CellBuffer, fps: i32) -> R
 
 fn draw_canvas(application: &Application, buffer: &mut CellBuffer) -> Result<()> {
     let console_size = application.get_terminal().get_console_size()?;
-    let x = 0;
-    let y = 3;
+    let x: i32 = 0;
+    let y: i32 = 3;
     let width = console_size.width - 1;
-    let height = console_size.height - y - 1;
-    let h_width  = width / 2;
-    let h_height = height / 2;
+    let height = console_size.height - y as usize - 1;
+    let h_width  = width  as i32 / 2;
+    let h_height = height as i32 / 2;
 
     let stroke = SolidPaint::new(Cell::new('*', Color::White, Color::DarkGrey));
     let fill = SolidPaint::new(Cell::new('#', Color::DarkGrey, Color::Black));
@@ -123,8 +123,8 @@ fn draw_canvas(application: &Application, buffer: &mut CellBuffer) -> Result<()>
 
     canvas.move_to(Point2d::new(h_width, y));
     canvas.line_to(Point2d::new(h_width, h_height - 10))?;
-    canvas.bezier_to(Point2d::new(h_width, h_height + 10), Point2d::new(width, h_height))?;
-    canvas.line_to(Point2d::new(h_width, height + y))?;
+    canvas.bezier_to(Point2d::new(h_width, h_height + 10), Point2d::new(width as i32, h_height))?;
+    canvas.line_to(Point2d::new(h_width, height as i32 + y))?;
 
     canvas.set_fill(&circle_fill);
     canvas.set_stroke(&circle_stroke);

@@ -31,7 +31,7 @@ impl Mouse for WindowsMouse {
             return Err("Problems trying to obtain the cursor position.");
         }
 
-        Ok(Point2d::new(point.x as usize, point.y as usize))
+        Ok(Point2d::new(point.x as i32, point.y as i32))
     }
 
     fn get_client_position(&self) -> Result<Point2d> {
@@ -47,7 +47,7 @@ impl Mouse for WindowsMouse {
             return Err("Problems trying to obtain the client cursor position.");
         }
 
-        Ok(Point2d::new(point.x as usize, point.y as usize))
+        Ok(Point2d::new(point.x as i32, point.y as i32))
     }
 
     fn set_position(&self, position: Point2d) -> Result<()> {

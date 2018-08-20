@@ -5,10 +5,10 @@ use ncurses::constants::ERR;
 use ncurses::constants::KEY_MOUSE;
 use ncurses::constants::REPORT_MOUSE_POSITION;
 use ncurses::constants::{
-    KEY_F0, KEY_F1, KEY_F10, KEY_F11, KEY_F12, KEY_F13, KEY_F14, KEY_F15, KEY_F2, KEY_F3, KEY_F4,
-    KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_BACKSPACE, KEY_BREAK, KEY_CANCEL, KEY_CLEAR,
-    KEY_DC, KEY_DOWN, KEY_EIC, KEY_ENTER, KEY_HOME, KEY_LEFT, KEY_NPAGE, KEY_PPAGE, KEY_PRINT,
-    KEY_RIGHT, KEY_UP,
+    KEY_F1, KEY_F10, KEY_F11, KEY_F12, KEY_F13, KEY_F14, KEY_F15, KEY_F2, KEY_F3, KEY_F4, KEY_F5,
+    KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_BACKSPACE, KEY_BREAK, KEY_CANCEL, KEY_CLEAR, KEY_DC,
+    KEY_DOWN, KEY_EIC, KEY_ENTER, KEY_HOME, KEY_LEFT, KEY_NPAGE, KEY_PPAGE, KEY_PRINT, KEY_RIGHT,
+    KEY_UP,
 };
 use ncurses::getmouse;
 use ncurses::has_colors;
@@ -155,8 +155,8 @@ impl NCursesApplication {
         // wheel up 0x80000
         let wheel_up = (event.bstate & 0x80000) != 0;
         let wheel_down = (event.bstate & 0x8000000) != 0
-            && event.x as usize == self.position.x
-            && event.y as usize == self.position.y;
+            && event.x as i32 == self.position.x
+            && event.y as i32 == self.position.y;
 
         let mouse_event_type = if click_1 || click_2 || click_3 || click_4 {
             MouseEventType::Click
@@ -200,8 +200,8 @@ impl NCursesApplication {
             self.right_button = false;
         }
 
-        self.position.x = event.x as usize;
-        self.position.y = event.y as usize;
+        self.position.x = event.x as i32;
+        self.position.y = event.y as i32;
 
         Ok(Event::Mouse(MouseEvent {
             event_type: mouse_event_type,

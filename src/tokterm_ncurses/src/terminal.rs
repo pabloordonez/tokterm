@@ -105,7 +105,10 @@ impl Terminal for NCursesTerminal {
 
         for cell in cell_buffer.iter() {
             let color_pair = ColorPair::from_cell(cell);
-            let position = cell_buffer.coordinates_of(index);
+            let position = match cell_buffer.coordinates_of(index) {
+                Some(point) => point,
+                None => return Err("The index of the character was outside the bounds of the buffer.")
+            };
 
             if !colors.contains_key(&color_pair) {
                 init_pair(
@@ -120,8 +123,8 @@ impl Terminal for NCursesTerminal {
             attron(COLOR_PAIR(*colors.get(&color_pair).unwrap()));
             mvwaddch(
                 self.window,
-                position.y as i32,
-                position.x as i32,
+                position.y,
+                position.x,
                 cell.character as chtype,
             );
 

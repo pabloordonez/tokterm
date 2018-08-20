@@ -1,12 +1,12 @@
 #[derive(Hash, Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Point2d {
-    pub x: usize,
-    pub y: usize,
+    pub x: i32,
+    pub y: i32,
 }
 
 #[allow(dead_code)]
 impl Point2d {
-    pub fn new(x: usize, y: usize) -> Point2d {
+    pub fn new(x: i32, y: i32) -> Point2d {
         Point2d { x, y }
     }
 
@@ -18,24 +18,12 @@ impl Point2d {
         Point2d::new(self.x + point.x, self.y + point.y)
     }
 
-    pub fn add_x(&self, x: usize) -> Point2d {
+    pub fn add_x(&self, x: i32) -> Point2d {
         Point2d::new(self.x + x, self.y)
     }
 
-    pub fn add_y(&self, y: usize) -> Point2d {
+    pub fn add_y(&self, y: i32) -> Point2d {
         Point2d::new(self.x, self.y + y)
-    }
-
-    pub fn sub(&self, point: Point2d) -> Point2d {
-        Point2d::new(self.x - point.x, self.y - point.y)
-    }
-
-    pub fn sub_x(&self, x: usize) -> Point2d {
-        Point2d::new(self.x - x, self.y)
-    }
-
-    pub fn sub_y(&self, y: usize) -> Point2d {
-        Point2d::new(self.x, self.y - y)
     }
 
     pub fn equal_to(&self, point: Point2d) -> bool {

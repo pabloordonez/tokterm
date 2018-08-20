@@ -133,7 +133,7 @@ fn process_mouse_event(mouse_event: MouseEvent) -> Result<TokEvent> {
         extra_button_2: false,
         extra_button_3: false,
         extra_button_4: false,
-        position: Point2d::new((x - 1) as usize, (y - 1) as usize),
+        position: Point2d::new((x - 1) as i32, (y - 1) as i32),
         wheel_delta: match button {
             Some(MouseButton::WheelUp) => 1,
             Some(MouseButton::WheelDown) => -1,

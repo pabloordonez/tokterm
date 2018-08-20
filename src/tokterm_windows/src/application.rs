@@ -222,8 +222,8 @@ fn process_mouse_event(input_record: &INPUT_RECORD) -> Event {
         extra_button_4: false,
         wheel_delta: get_wheel_delta(mouse_event.dwButtonState),
         position: Point2d::new(
-            mouse_event.dwMousePosition.X as usize,
-            mouse_event.dwMousePosition.Y as usize,
+            mouse_event.dwMousePosition.X as i32,
+            mouse_event.dwMousePosition.Y as i32,
         ),
     })
 }

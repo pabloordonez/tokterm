@@ -6,8 +6,8 @@ use tokterm_core::Result;
 extern crate tokterm_windows;
 
 #[cfg(unix)]
-//extern crate tokterm_termion;
-extern crate tokterm_ncurses;
+extern crate tokterm_termion;
+//extern crate tokterm_ncurses;
 
 mod application;
 use application::execute;
@@ -26,15 +26,16 @@ fn launch() -> Result<()> {
     Ok(())
 }
 
-/*#[cfg(unix)]
+#[cfg(unix)]
 fn launch() -> Result<()> {
     use tokterm_termion::application::TermionApplication;
     let mut application = TermionApplication::create()?;
     execute(&mut application)?;
     application.get_terminal().dispose()?;
     Ok(())
-}*/
+}
 
+/*
 #[cfg(unix)]
 fn launch() -> Result<()> {
     use tokterm_ncurses::application::NCursesApplication;
@@ -43,3 +44,4 @@ fn launch() -> Result<()> {
     application.get_terminal().dispose()?;
     Ok(())
 }
+*/

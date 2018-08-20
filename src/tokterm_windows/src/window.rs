@@ -85,7 +85,7 @@ impl Window for WindowsWindow {
             return Err("Problems trying to obtain the window rect.");
         }
 
-        Ok(Point2d::new(rect.left as usize, rect.top as usize))
+        Ok(Point2d::new(rect.left as i32, rect.top as i32))
     }
 
     fn set_window_position(&self, position: Point2d) -> Result<()> {

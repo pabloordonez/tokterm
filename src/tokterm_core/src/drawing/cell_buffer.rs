@@ -35,32 +35,50 @@ impl CellBuffer {
     }
 
     #[inline]
-    pub fn index_of(&self, position: Point2d) -> usize {
-        position.x + self.size.width * position.y
-    }
+    pub fn index_of(&self, position: Point2d) -> Option<usize> {
+        let ux = position.x as usize;
+        let uy = position.y as usize;
 
-    #[inline]
-    pub fn coordinates_of(&self, index: usize) -> Point2d {
-        if self.size.is_empty() || self.size.width == 0 || self.size.height == 0 {
-            return Point2d::empty();
+        if position.x < 0 || position.y < 0 || ux >= self.size.width || uy >= self.size.height {
+            return Option::None;
         }
 
-        Point2d::new(index % self.size.width, index / self.size.width)
+        let index = ux + self.size.width * uy;
+
+        if index >= self.cells.len() {
+            return Option::None;
+        }
+
+        Option::Some(index)
     }
 
     #[inline]
-    pub fn get(&self, position: Point2d) -> Cell {
-        let index = self.index_of(position);
-        assert!(index < self.cells.len());
-        self.cells[index]
+    pub fn coordinates_of(&self, index: usize) -> Option<Point2d> {
+        if self.size.width == 0 || self.size.height == 0 {
+            return None;
+        }
+
+        Option::Some(Point2d::new(
+            (index % self.size.width) as i32,
+            (index / self.size.width) as i32,
+        ))
+    }
+
+    #[inline]
+    pub fn get(&self, position: Point2d) -> Option<Cell> {
+        return match self.index_of(position) {
+            Some(index) => Some(self.cells[index]),
+            None => Option::None,
+        };
     }
 
     #[inline]
     pub fn set(&mut self, position: Point2d, cell: Cell) {
-        let index = self.index_of(position);
-        if index >= self.cells.len() {
-            return;
-        }
+        let index = match self.index_of(position) {
+            Some(index) => index,
+            None => return,
+        };
+
         self.cells[index] = cell;
     }
 
@@ -71,20 +89,21 @@ impl CellBuffer {
         foreground: Color,
         background: Color,
     ) {
-        let mut index = 0;
+        let mut buffer_index = match self.index_of(position) {
+            Some(index) => index,
+            None => return,
+        };
 
         for character in text {
-            let buffer_index = self.index_of(position.add_x(index));
-
-            if buffer_index >= self.cells.len() {
-                break;
-            }
-
             self.cells[buffer_index].character = character;
             self.cells[buffer_index].foreground = foreground;
             self.cells[buffer_index].background = background;
 
-            index += 1;
+            buffer_index += 1;
+
+            if buffer_index >= self.cells.len() {
+                return;
+            }
         }
     }
 
@@ -99,36 +118,46 @@ impl CellBuffer {
     }
 
     pub fn repeat_cell(&mut self, cell: Cell, position: Point2d, length: usize) {
-        for index in 0..length {
-            let buffer_index = self.index_of(position.add_x(index));
+        let buffer_index = match self.index_of(position) {
+            Some(index) => index,
+            None => return,
+        };
 
-            if buffer_index >= self.cells.len() {
-                break;
+        for index in 0..length {
+            if buffer_index + index >= self.cells.len() {
+                return;
             }
 
-            self.cells[buffer_index] = cell;
+            self.cells[buffer_index + index] = cell;
         }
     }
 
     pub fn write_cell_buffer(&mut self, cell_buffer: &CellBuffer, position: Point2d) {
-        for cby in 0..cell_buffer.size.height {
-            let destination_y = position.y + cby;
+        let width = cell_buffer.size.width as i32;
+        let height = cell_buffer.size.height as i32;
+        let self_width = self.size.width as i32;
+        let self_height = self.size.height as i32;
 
-            if destination_y >= self.size.height {
+        for cby in 0..height {
+            let destination_y: i32 = position.y + cby;
+
+            if destination_y >= self_height {
                 break;
             }
 
-            for cbx in 0..cell_buffer.size.width {
-                let destination_x = position.x + cbx;
+            for cbx in 0..width {
+                let destination_x: i32 = position.x + cbx;
 
-                if destination_x >= self.size.width {
+                if destination_x >= self_width {
                     break;
                 }
 
-                self.set(
-                    Point2d::new(destination_x, destination_y),
-                    cell_buffer.get(Point2d::new(cbx, cby)),
-                );
+                let cell = match cell_buffer.get(Point2d::new(cbx, cby)) {
+                    Some(cell) => cell,
+                    None => return,
+                };
+
+                self.set(Point2d::new(destination_x, destination_y), cell);
             }
         }
     }
