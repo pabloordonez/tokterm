@@ -45,6 +45,12 @@ pub fn execute(application: &mut Application) -> Result<()> {
             application.get_terminal().get_console_size()?,
         );
 
+        // checks the app stats and draw them in the stat bar.
+        draw_stats(application, &mut buffer, fps)?;
+
+        // test the canvas functionality.
+        draw_canvas(application, &mut buffer)?;
+
         // process native events.
         application.listen_events()?;
 
@@ -59,11 +65,6 @@ pub fn execute(application: &mut Application) -> Result<()> {
             };
         }
 
-        // checks the app stats and draw them in the stat bar.
-        draw_stats(application, &mut buffer, fps)?;
-
-        // test the canvas functionality.
-        draw_canvas(application, &mut buffer)?;
 
         // blits the buffer onto the terminal console.
         application.get_mut_terminal().write(&mut buffer)?;

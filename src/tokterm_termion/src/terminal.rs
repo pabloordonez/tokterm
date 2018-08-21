@@ -12,10 +12,12 @@ use tokterm_core::system::terminal::Terminal;
 use tokterm_core::system::window::Window;
 use tokterm_core::Result;
 use termion::clear;
+use termion::async_stdin;
+use termion::AsyncReader;
 
 pub struct TermionTerminal {
     stdout: MouseTerminal<RawTerminal<Stdout>>,
-    stdin: Stdin,
+    stdin: AsyncReader,
 }
 
 impl TermionTerminal {
@@ -26,7 +28,7 @@ impl TermionTerminal {
         };
 
         let stdout = MouseTerminal::from(raw_terminal);
-        let stdin = stdin();
+        let stdin = async_stdin();
 
         Ok(TermionTerminal { stdout, stdin })
     }
@@ -37,7 +39,7 @@ impl TermionTerminal {
     }
 
     #[inline]
-    pub fn get_stdin(&mut self) -> &mut Stdin {
+    pub fn get_stdin(&mut self) -> &mut AsyncReader {
         &mut self.stdin
     }
 }
