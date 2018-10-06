@@ -1,5 +1,5 @@
 use color::color_to_u8;
-use std::io::{stdin, stdout, Stdin, Stdout, Write};
+use std::io::{stdout, Stdout, Write};
 use termion::color;
 use termion::cursor::{Goto, Hide, Show};
 use termion::input::{MouseTerminal};
@@ -9,7 +9,6 @@ use tokterm_core::drawing::cell_buffer::CellBuffer;
 use tokterm_core::drawing::point_2d::Point2d;
 use tokterm_core::drawing::size_2d::Size2d;
 use tokterm_core::system::terminal::Terminal;
-use tokterm_core::system::window::Window;
 use tokterm_core::Result;
 use termion::clear;
 use termion::async_stdin;
@@ -45,11 +44,6 @@ impl TermionTerminal {
 }
 
 impl Terminal for TermionTerminal {
-    /// Disposes the terminal object-
-    fn dispose(&self) -> Result<()> {
-        Ok(())
-    }
-
     /// Shows or hides the cursor.
     fn set_cursor_visibility(&mut self, visible: bool) -> Result<()> {
         if visible {
@@ -87,11 +81,6 @@ impl Terminal for TermionTerminal {
             width: term_size.0 as usize,
             height: term_size.1 as usize,
         })
-    }
-
-    /// Gets the character size in pixel units.
-    fn get_char_size(&self, window: &Window) -> Result<Size2d> {
-        unimplemented!()
     }
 
     /// Clears the console screen.

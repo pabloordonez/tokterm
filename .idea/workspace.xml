@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fc5de7aa-e4b7-45e0-b6ab-476b76c3050b" name="Default" comment="" />
+    <list default="true" id="fc5de7aa-e4b7-45e0-b6ab-476b76c3050b" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_core/src/system/application.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_core/src/system/application.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_core/src/system/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_core/src/system/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_core/src/system/mouse.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_core/src/system/terminal.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_core/src/system/terminal.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_core/src/system/window.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_ncurses/src/application.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_ncurses/src/application.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_ncurses/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_ncurses/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_ncurses/src/mouse.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_ncurses/src/terminal.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_ncurses/src/terminal.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_ncurses/src/window.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_termion/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_termion/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_termion/src/application.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_termion/src/application.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_termion/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_termion/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_termion/src/mouse.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_termion/src/terminal.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_termion/src/terminal.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_termion/src/window.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_windows/src/application.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_windows/src/application.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_windows/src/mouse.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_windows/src/mouse.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_windows/src/terminal.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_windows/src/terminal.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tokterm_windows/src/window.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tokterm_windows/src/window.rs" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -50,8 +75,8 @@
       <file leaf-file-name="application.rs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/tokterm_ncurses/src/application.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2329">
-              <caret line="137" column="19" selection-start-line="137" selection-start-column="19" selection-end-line="137" selection-end-column="19" />
+            <state relative-caret-position="2193">
+              <caret line="129" column="19" selection-start-line="129" selection-start-column="19" selection-end-line="129" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -59,7 +84,7 @@
       <file leaf-file-name="canvas.rs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/tokterm_core/src/drawing/canvas.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
+            <state relative-caret-position="1870">
               <caret line="118" column="32" selection-start-line="118" selection-start-column="32" selection-end-line="118" selection-end-column="32" />
               <folding>
                 <element signature="e#331#332#0" expanded="true" />
@@ -78,8 +103,8 @@
       <file leaf-file-name="terminal.rs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/tokterm_termion/src/terminal.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="40" column="13" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
+            <state relative-caret-position="663">
+              <caret line="39" column="13" selection-start-line="39" selection-start-column="13" selection-end-line="39" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -87,17 +112,26 @@
       <file leaf-file-name="application.rs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/tokterm_termion/src/application.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="88" column="40" selection-start-line="88" selection-start-column="40" selection-end-line="88" selection-end-column="40" />
+            <state relative-caret-position="1037">
+              <caret line="70" column="40" selection-start-line="70" selection-start-column="40" selection-end-line="70" selection-end-column="40" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="application.rs" pinned="false" current-in-tab="true">
+      <file leaf-file-name="application.rs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/application.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-843">
-              <caret line="51" column="10" selection-start-line="51" selection-start-column="10" selection-end-line="51" selection-end-column="10" />
+            <state relative-caret-position="17">
+              <caret line="51" column="8" selection-start-line="51" selection-start-column="8" selection-end-line="51" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="terminal.rs" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/tokterm_ncurses/src/terminal.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="228">
+              <caret line="116" selection-start-line="116" selection-end-line="116" />
             </state>
           </provider>
         </entry>
@@ -179,8 +213,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -197,19 +229,21 @@
               <item name="tokterm" type="b2602c69:ProjectViewProjectNode" />
               <item name="tokterm" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="tokterm_termion" type="462c0819:PsiDirectoryNode" />
+              <item name="tokterm_ncurses" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="tokterm" type="b2602c69:ProjectViewProjectNode" />
               <item name="tokterm" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="tokterm_termion" type="462c0819:PsiDirectoryNode" />
+              <item name="tokterm_ncurses" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="AndroidView" />
     </panes>
   </component>
@@ -308,7 +342,7 @@
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20202559" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20415778" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -331,6 +365,41 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/tokterm_termion/src/application.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1224">
+          <caret line="88" column="40" selection-start-line="88" selection-start-column="40" selection-end-line="88" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.cargo/registry/src/github.com-1ecc6299db9ec823/termion-1.5.1/src/async.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="35" selection-start-line="16" selection-start-column="24" selection-end-line="16" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.cargo/registry/src/github.com-1ecc6299db9ec823/ncurses-5.94.0/src/lib.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="33983">
+          <caret line="1999" column="7" selection-start-line="1999" selection-start-column="7" selection-end-line="1999" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.cargo/registry/src/github.com-1ecc6299db9ec823/ncurses-5.94.0/src/ll.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="731">
+          <caret line="43" column="11" selection-start-line="43" selection-start-column="11" selection-end-line="43" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/application.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="867">
+          <caret line="51" column="10" selection-start-line="51" selection-start-column="10" selection-end-line="51" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/tokterm_ncurses/src/application.rs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2329">
@@ -590,14 +659,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/tokterm_ncurses/src/application.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2329">
-          <caret line="137" column="19" selection-start-line="137" selection-start-column="19" selection-end-line="137" selection-end-column="19" />
+        <state relative-caret-position="2193">
+          <caret line="129" column="19" selection-start-line="129" selection-start-column="19" selection-end-line="129" selection-end-column="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/tokterm_core/src/drawing/canvas.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
+        <state relative-caret-position="1870">
           <caret line="118" column="32" selection-start-line="118" selection-start-column="32" selection-end-line="118" selection-end-column="32" />
           <folding>
             <element signature="e#331#332#0" expanded="true" />
@@ -621,22 +690,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/tokterm_termion/src/terminal.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="40" column="13" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
+        <state relative-caret-position="663">
+          <caret line="39" column="13" selection-start-line="39" selection-start-column="13" selection-end-line="39" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/tokterm_termion/src/application.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="88" column="40" selection-start-line="88" selection-start-column="40" selection-end-line="88" selection-end-column="40" />
+        <state relative-caret-position="1037">
+          <caret line="70" column="40" selection-start-line="70" selection-start-column="40" selection-end-line="70" selection-end-column="40" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/application.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-843">
-          <caret line="51" column="10" selection-start-line="51" selection-start-column="10" selection-end-line="51" selection-end-column="10" />
+        <state relative-caret-position="17">
+          <caret line="51" column="8" selection-start-line="51" selection-start-column="8" selection-end-line="51" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tokterm_ncurses/src/terminal.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="116" selection-start-line="116" selection-end-line="116" />
         </state>
       </provider>
     </entry>

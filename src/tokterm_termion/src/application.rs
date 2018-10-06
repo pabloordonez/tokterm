@@ -1,4 +1,3 @@
-use mouse::TermionMouse;
 use terminal::TermionTerminal;
 use termion::event::Key;
 use termion::event::{Event, MouseButton, MouseEvent};
@@ -13,16 +12,11 @@ use tokterm_core::input::key::Key as TokKey;
 use tokterm_core::input::keyboard_state::KeyboardState;
 use tokterm_core::input::mouse_state::MouseState;
 use tokterm_core::system::application::Application;
-use tokterm_core::system::mouse::Mouse;
 use tokterm_core::system::terminal::Terminal;
-use tokterm_core::system::window::Window;
 use tokterm_core::Result;
-use window::TermionWindow;
 
 pub struct TermionApplication {
     terminal: TermionTerminal,
-    window: TermionWindow,
-    mouse: TermionMouse,
     event_queue: EventQueue,
     mouse_state: MouseState,
     keyboard_state: KeyboardState,
@@ -32,8 +26,6 @@ impl TermionApplication {
     pub fn create() -> Result<TermionApplication> {
         let application = TermionApplication {
             terminal: TermionTerminal::create()?,
-            window: TermionWindow::new(),
-            mouse: TermionMouse::new(),
             event_queue: EventQueue::new(),
             mouse_state: MouseState::new(),
             keyboard_state: KeyboardState::new(),
@@ -52,16 +44,6 @@ impl Application for TermionApplication {
     #[inline]
     fn get_mut_terminal(&mut self) -> &mut Terminal {
         &mut self.terminal
-    }
-
-    #[inline]
-    fn get_window(&self) -> &Window {
-        &self.window
-    }
-
-    #[inline]
-    fn get_mouse(&self) -> &Mouse {
-        &self.mouse
     }
 
     #[inline]

@@ -1,13 +1,14 @@
 extern crate tokterm_core;
-use tokterm_core::system::application::Application;
 use tokterm_core::Result;
 
-#[cfg(windows)]
+#[cfg(feature = "windows")]
 extern crate tokterm_windows;
 
-#[cfg(unix)]
+#[cfg(feature = "termion")]
 extern crate tokterm_termion;
-//extern crate tokterm_ncurses;
+
+#[cfg(all(unix, feature = "ncurses"))]
+extern crate tokterm_ncurses;
 
 mod application;
 use application::execute;
@@ -17,31 +18,26 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-#[cfg(windows)]
+#[cfg(feature = "windows")]
 fn launch() -> Result<()> {
     use tokterm_windows::application::WindowsApplication;
     let mut application = WindowsApplication::create()?;
     execute(&mut application)?;
-    application.get_terminal().dispose()?;
     Ok(())
 }
 
-#[cfg(unix)]
+#[cfg(feature = "termion")]
 fn launch() -> Result<()> {
     use tokterm_termion::application::TermionApplication;
     let mut application = TermionApplication::create()?;
     execute(&mut application)?;
-    application.get_terminal().dispose()?;
     Ok(())
 }
 
-/*
-#[cfg(unix)]
+#[cfg(all(unix, feature = "ncurses"))]
 fn launch() -> Result<()> {
     use tokterm_ncurses::application::NCursesApplication;
     let mut application = NCursesApplication::create()?;
     execute(&mut application)?;
-    application.get_terminal().dispose()?;
     Ok(())
 }
-*/

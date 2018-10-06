@@ -1,4 +1,3 @@
-use mouse::NCursesMouse;
 use ncurses::cbreak;
 use ncurses::constants::ALL_MOUSE_EVENTS;
 use ncurses::constants::ERR;
@@ -32,16 +31,11 @@ use tokterm_core::input::key::Key;
 use tokterm_core::input::keyboard_state::KeyboardState;
 use tokterm_core::input::mouse_state::MouseState;
 use tokterm_core::system::application::Application;
-use tokterm_core::system::mouse::Mouse;
 use tokterm_core::system::terminal::Terminal;
-use tokterm_core::system::window::Window;
 use tokterm_core::Result;
-use window::NCursesWindow;
 
 pub struct NCursesApplication {
     terminal: NCursesTerminal,
-    window: NCursesWindow,
-    mouse: NCursesMouse,
     event_queue: EventQueue,
     mouse_state: MouseState,
     keyboard_state: KeyboardState,
@@ -60,8 +54,6 @@ impl NCursesApplication {
     pub fn create() -> Result<NCursesApplication> {
         let application = NCursesApplication {
             terminal: NCursesTerminal::create()?,
-            window: NCursesWindow::new(),
-            mouse: NCursesMouse::new(),
             event_queue: EventQueue::new(),
             mouse_state: MouseState::new(),
             keyboard_state: KeyboardState::new(),
@@ -233,16 +225,6 @@ impl Application for NCursesApplication {
     #[inline]
     fn get_mut_terminal(&mut self) -> &mut Terminal {
         &mut self.terminal
-    }
-
-    #[inline]
-    fn get_window(&self) -> &Window {
-        &self.window
-    }
-
-    #[inline]
-    fn get_mouse(&self) -> &Mouse {
-        &self.mouse
     }
 
     #[inline]

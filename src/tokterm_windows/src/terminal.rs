@@ -4,7 +4,6 @@ use tokterm_core::drawing::cell_buffer::CellBuffer;
 use tokterm_core::drawing::point_2d::Point2d;
 use tokterm_core::drawing::size_2d::Size2d;
 use tokterm_core::system::terminal::Terminal;
-use tokterm_core::system::window::Window;
 use tokterm_core::Result;
 use color::get_u16_from_color;
 use winapi::ctypes::c_void;
@@ -28,6 +27,12 @@ pub struct WindowsTerminal {
     pub output_handle: HANDLE,
     pub input_handle: HANDLE,
     pub window_handle: HWND,
+}
+
+impl Drop for WindowsTerminal {
+    fn drop(&mut self) {
+        unsafe { CloseHandle(self.console_handle) };
+    }
 }
 
 impl WindowsTerminal {
@@ -77,11 +82,6 @@ impl WindowsTerminal {
 
 #[allow(dead_code)]
 impl Terminal for WindowsTerminal {
-    fn dispose(&self) -> Result<()> {
-        unsafe { CloseHandle(self.console_handle) };
-        Ok(())
-    }
-
     fn set_cursor_visibility(&mut self, visible: bool) -> Result<()> {
         let mut console_cursor_info = CONSOLE_CURSOR_INFO::empty();
         let success = unsafe { GetConsoleCursorInfo(self.output_handle, &mut console_cursor_info) };
@@ -134,20 +134,6 @@ impl Terminal for WindowsTerminal {
         Ok(Size2d::new(
             (window.Right - window.Left + 1) as usize,
             (window.Bottom - window.Top + 1) as usize,
-        ))
-    }
-
-    fn get_char_size(&self, window: &Window) -> Result<Size2d> {
-        let console_size = self.get_console_size()?;
-        let client_size = window.get_window_client_size()?;
-
-        if console_size.width == 0 || console_size.height == 0 {
-            return Ok(Size2d::empty());
-        }
-
-        Ok(Size2d::new(
-            client_size.width / console_size.width,
-            client_size.height / console_size.height,
         ))
     }
 

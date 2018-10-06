@@ -1,6 +1,5 @@
 use std::ptr::null_mut;
 use tokterm_core::drawing::point_2d::Point2d;
-use tokterm_core::system::mouse::Mouse;
 use tokterm_core::Result;
 use winapi::shared::windef::{HWND, POINT};
 use winapi::um::wincon::GetConsoleWindow;
@@ -20,10 +19,8 @@ impl WindowsMouse {
             window_handle: unsafe { GetConsoleWindow() },
         }
     }
-}
 
-impl Mouse for WindowsMouse {
-    fn get_absolute_position(&self) -> Result<Point2d> {
+    pub fn get_absolute_position(&self) -> Result<Point2d> {
         let mut point = POINT::empty();
         let success = unsafe { GetCursorPos(&mut point) };
 
@@ -34,7 +31,7 @@ impl Mouse for WindowsMouse {
         Ok(Point2d::new(point.x as i32, point.y as i32))
     }
 
-    fn get_client_position(&self) -> Result<Point2d> {
+    pub fn get_client_position(&self) -> Result<Point2d> {
         let position = self.get_absolute_position()?;
         let mut point = POINT {
             x: position.x as i32,
@@ -50,7 +47,7 @@ impl Mouse for WindowsMouse {
         Ok(Point2d::new(point.x as i32, point.y as i32))
     }
 
-    fn set_position(&self, position: Point2d) -> Result<()> {
+    pub fn set_position(&self, position: Point2d) -> Result<()> {
         let success = unsafe { SetCursorPos(position.x as i32, position.y as i32) };
 
         if success == 0 {
@@ -60,7 +57,7 @@ impl Mouse for WindowsMouse {
         Ok(())
     }
 
-    fn show_cursor(&self, visible: bool) -> Result<()> {
+    pub fn show_cursor(&self, visible: bool) -> Result<()> {
         if visible {
             unsafe { SetCursor(LoadCursorW(null_mut(), IDC_ARROW)) }
         } else {

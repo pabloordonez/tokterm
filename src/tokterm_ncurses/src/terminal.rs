@@ -22,7 +22,6 @@ use tokterm_core::drawing::cell_buffer::CellBuffer;
 use tokterm_core::drawing::point_2d::Point2d;
 use tokterm_core::drawing::size_2d::Size2d;
 use tokterm_core::system::terminal::Terminal;
-use tokterm_core::system::window::Window;
 use tokterm_core::Result;
 
 pub struct NCursesTerminal {
@@ -42,16 +41,13 @@ impl NCursesTerminal {
     }
 }
 
-impl Terminal for NCursesTerminal {
-    /// Disposes the terminal object-
-    fn dispose(&self) -> Result<()> {
-        if endwin() == ERR {
-            return Err("Couldn't dispose the window.");
-        }
-
-        Ok(())
+impl Drop for NCursesTerminal {
+    fn drop(&mut self) {
+        endwin();
     }
+}
 
+impl Terminal for NCursesTerminal {
     /// Shows or hides the cursor.
     fn set_cursor_visibility(&mut self, visible: bool) -> Result<()> {
         match curs_set(if visible {
@@ -83,11 +79,6 @@ impl Terminal for NCursesTerminal {
         Ok(Size2d::new(x as usize, y as usize))
     }
 
-    /// Gets the character size in pixel units.
-    fn get_char_size(&self, window: &Window) -> Result<Size2d> {
-        unimplemented!()
-    }
-
     /// Clears the console screen.
     fn clear(&mut self) -> Result<()> {
         if clear() != ERR {
@@ -107,7 +98,9 @@ impl Terminal for NCursesTerminal {
             let color_pair = ColorPair::from_cell(cell);
             let position = match cell_buffer.coordinates_of(index) {
                 Some(point) => point,
-                None => return Err("The index of the character was outside the bounds of the buffer.")
+                None => {
+                    return Err("The index of the character was outside the bounds of the buffer.")
+                }
             };
 
             if !colors.contains_key(&color_pair) {

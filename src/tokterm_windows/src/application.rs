@@ -8,9 +8,7 @@ use tokterm_core::input::key::Key;
 use tokterm_core::input::keyboard_state::KeyboardState;
 use tokterm_core::input::mouse_state::MouseState;
 use tokterm_core::system::application::Application;
-use tokterm_core::system::mouse::Mouse;
 use tokterm_core::system::terminal::Terminal;
-use tokterm_core::system::window::Window;
 use tokterm_core::Result;
 
 use mouse::WindowsMouse;
@@ -76,6 +74,16 @@ impl WindowsApplication {
 
         Ok(application)
     }
+
+    #[inline]
+    pub fn get_window(&self) -> &WindowsWindow {
+        &self.window
+    }
+
+    #[inline]
+    pub fn get_mouse(&self) -> &WindowsMouse {
+        &self.mouse
+    }
 }
 
 impl Application for WindowsApplication {
@@ -87,16 +95,6 @@ impl Application for WindowsApplication {
     #[inline]
     fn get_mut_terminal(&mut self) -> &mut Terminal {
         &mut self.terminal
-    }
-
-    #[inline]
-    fn get_window(&self) -> &Window {
-        &self.window
-    }
-
-    #[inline]
-    fn get_mouse(&self) -> &Mouse {
-        &self.mouse
     }
 
     #[inline]
@@ -208,8 +206,7 @@ fn process_mouse_event(input_record: &INPUT_RECORD) -> Event {
         event_type: match mouse_event.dwEventFlags {
             0 => MouseEventType::Click,
             MOUSE_MOVED => MouseEventType::MouseMove,
-            MOUSE_WHEELED |
-            MOUSE_HWHEELED => MouseEventType::Wheel,
+            MOUSE_WHEELED | MOUSE_HWHEELED => MouseEventType::Wheel,
             DOUBLE_CLICK => MouseEventType::DoubleClick,
             _ => MouseEventType::MouseMove,
         },
